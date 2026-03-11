@@ -28,6 +28,7 @@ class QueueTest {
 
     @Test
     void clear() {
+        // top > bottom
         q1.enqueue(3);
         q1.enqueue(5);
         q1.enqueue(7);
@@ -35,6 +36,18 @@ class QueueTest {
 
         assertEquals(4, q1.elements());
 
+        q1.clear();
+        assertEquals(0, q1.elements());
+
+        // top < bottom
+        q1.enqueue(3);
+        q1.enqueue(5);
+        q1.enqueue(7);
+        q1.dequeue();
+        q1.dequeue();
+        q1.enqueue(6);
+        q1.enqueue(8);
+        assertEquals(3, q1.elements());
         q1.clear();
         assertEquals(0, q1.elements());
 
@@ -48,37 +61,51 @@ class QueueTest {
         q1.enqueue(11);
 
         assertEquals(4, q1.elements());
+
+        q1.enqueue(13);
+
+        // top < bottom
+        q1.dequeue();
+        q1.dequeue();
+        q1.enqueue(17);
+        assertEquals(4, q1.elements());
+
     }
 
     @Test
     void dequeue() {
+        assertEquals(0, q1.elements());
+        assertEquals(Integer.MIN_VALUE, q1.dequeue());
+
         q1.enqueue(2);
         q1.enqueue(5);
         q1.enqueue(7);
         q1.enqueue(11);
-        assertEquals(4, q1.elements());
+        q1.enqueue(13);
+        assertEquals(5, q1.elements());
 
         assertEquals(2, q1.dequeue());
-        assertEquals(3,q1.elements());
-
         assertEquals(5, q1.dequeue());
-        assertEquals(2,q1.elements());
+
+
+        // dequeue from queue with top < bottom
+        q1.enqueue(20);
+        q1.enqueue(30);
 
         assertEquals(7, q1.dequeue());
-        assertEquals(1,q1.elements());
-
         assertEquals(11, q1.dequeue());
-        assertEquals(0,q1.elements());
-
-        // dequeue from empty queue
-        assertEquals(-1, q1.dequeue());
-        assertEquals(0,q1.elements());
+        assertEquals(13, q1.dequeue());
+        assertEquals(20, q1.dequeue());
+        assertEquals(30, q1.dequeue());
 
 
     }
 
     @Test
     void peek() {
+
+        assertEquals(Integer.MIN_VALUE, q1.peek());
+
         q1.enqueue(2);
         assertEquals(2, q1.peek());
 
@@ -95,6 +122,7 @@ class QueueTest {
     @Test
     void elements() {
         q1.enqueue(3);
+        assertEquals(1, q1.elements());
         q1.enqueue(5);
         q1.enqueue(7);
         q1.enqueue(11);
@@ -170,17 +198,19 @@ class QueueTest {
         assertEquals("[50,30,22,25,70]", printedOutput3);
 
 
+        // print queue with top < bottom
 
         q1.dequeue();
         q1.dequeue();
         q1.enqueue(42);
+        q1.enqueue(100);
 
         ByteArrayOutputStream outputStream4 = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream4));
 
         q1.print();
         String printedOutput4 = outputStream4.toString().trim();
-        assertEquals("[22,25,70,42]", printedOutput4);
+        assertEquals("[22,25,70,42,100]", printedOutput4);
 
 
     }

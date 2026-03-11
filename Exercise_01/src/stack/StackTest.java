@@ -90,12 +90,14 @@ class StackTest {
 
         // pop with underflow
 
-        assertEquals(-1, s1.pop());
+        assertEquals(0, s1.elements());
+        assertEquals(Integer.MIN_VALUE, s1.pop());
 
     }
 
     @Test
     void peek() {
+        assertEquals(Integer.MIN_VALUE, s2.peek());
         s2.push(42);
         assertEquals(42, s2.peek());
         assertEquals(42, s2.peek());
