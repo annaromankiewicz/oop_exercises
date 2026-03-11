@@ -81,8 +81,19 @@ public class QueueAdvanced {
         clone.top = this.top;
         clone.bottom = this.bottom;
 
-        for (int i = 0; i < size; i++) {
-            clone.queue[i] = this.queue[i];
+        if (bottom != -1) {
+            if (top > bottom) {
+                for (int i = 0; i <= top; i++) {
+                    clone.queue[i] = queue[i];
+                }
+            } else {
+                for (int i = bottom; i < size; i++) {
+                    clone.queue[i] = queue[i];
+                }
+                for (int i = 0; i <= top; i++) {
+                    clone.queue[i] = queue[i];
+                }
+            }
         }
         return clone;
     }
@@ -153,33 +164,23 @@ public class QueueAdvanced {
         return false;
     }
 
-    /**
-     * Clears all elements from the queue
-     */
-    public void clear() {
-        for (int i = 0; i < size; i++) {
-            queue[i] = 0;
-        }
-        bottom = -1; // starting value of bottom
-        top = 0;
-    }
 
     /**
      * Enqueues an element at the back of the queue
      */
     public void enqueue(int val) {
-        if (bottom == -1) { // starting point - empty queue
-            queue[0] = val;
-            bottom++;
-        } else if (top == bottom - 1 || (top == size - 1 && bottom == 0)) {                // prevents overflow
-            return;
-        } else {
-            if (top == size - 1 && bottom != 0) {
-                top = 0;
+        if (!(top == bottom - 1 || (top == size - 1 && bottom == 0))) {
+            if (bottom == -1) { // starting point - empty queue
+                queue[0] = val;
+                bottom++;
             } else {
-                top++;
+                if (top == size - 1 && bottom != 0) {
+                    top = 0;
+                } else {
+                    top++;
+                }
+                queue[top] = val;
             }
-            queue[top] = val;
         }
     }
 
@@ -207,17 +208,6 @@ public class QueueAdvanced {
 
 
     /**
-     * Returns the front element of the queue without removing it
-     */
-    public int peek() {
-
-        if (bottom == -1) {
-            return Integer.MIN_VALUE;
-        }
-        return queue[top];
-    }
-
-    /**
      * Returns the number of elements in the queue
      */
     public int elements() {
@@ -228,14 +218,14 @@ public class QueueAdvanced {
         } else if (bottom != top) {
             return size - (bottom - top - 1); // bottom - top -1 gives us the amount of free places in the queue
         } else return 1;
-}
+    }
 
-/**
- * Returns the maximum size of the queue
- */
-public int size() {
-    return size;
-}
+    /**
+     * Returns the maximum size of the queue
+     */
+    public int size() {
+        return size;
+    }
 
 
 }

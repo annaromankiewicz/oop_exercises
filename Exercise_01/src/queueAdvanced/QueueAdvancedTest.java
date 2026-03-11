@@ -16,6 +16,8 @@ class QueueAdvancedTest {
         q1 = new QueueAdvanced(); //size = 7
         q2 = new QueueAdvanced();
         q3 = new QueueAdvanced(4);
+
+
     }
 
     @Test
@@ -67,8 +69,20 @@ class QueueAdvancedTest {
         q1.enqueue(11);
 
         QueueAdvanced q4 = new QueueAdvanced(q1);
-
         assertTrue(q1.equals(q4));
+
+        q3.enqueue(1);
+        q3.enqueue(2);
+        q3.enqueue(3);
+        q3.enqueue(4);
+        q3.dequeue();
+        q3.dequeue();
+        q3.enqueue(5);
+        q3.enqueue(6);
+
+        QueueAdvanced q5 = new QueueAdvanced(q3);
+        assertTrue(q3.equals(q5));
+        assertTrue(q3.equals(q3.clone()));
     }
 
     @Test
@@ -111,6 +125,17 @@ class QueueAdvancedTest {
 
         assertTrue(q1.search(8));
         assertFalse(q1.search(10));
+
+        q3.enqueue(1);
+        q3.enqueue(2);
+        q3.enqueue(3);
+        q3.enqueue(4);
+        q3.dequeue();
+        q3.dequeue();
+        q3.enqueue(5);
+        q3.enqueue(6);
+
+        assertTrue(q3.search(6));
 
     }
 }

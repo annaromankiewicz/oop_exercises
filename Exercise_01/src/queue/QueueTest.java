@@ -21,13 +21,13 @@ class QueueTest {
     }
 
     @Test
-    void initQueue() {
+    void testInitQueue() {
         assertEquals(5, q1.size());
         assertEquals(7, q2.size());
     }
 
     @Test
-    void clear() {
+    void testClear() {
         // top > bottom
         q1.enqueue(3);
         q1.enqueue(5);
@@ -43,18 +43,20 @@ class QueueTest {
         q1.enqueue(3);
         q1.enqueue(5);
         q1.enqueue(7);
+        q1.enqueue(11);
+        q1.enqueue(13);
         q1.dequeue();
         q1.dequeue();
         q1.enqueue(6);
         q1.enqueue(8);
-        assertEquals(3, q1.elements());
+        assertEquals(5, q1.elements());
         q1.clear();
         assertEquals(0, q1.elements());
 
     }
 
     @Test
-    void enqueue() {
+    void testEnqueue() {
         q1.enqueue(3);
         q1.enqueue(5);
         q1.enqueue(7);
@@ -73,7 +75,7 @@ class QueueTest {
     }
 
     @Test
-    void dequeue() {
+    void testDequeue() {
         assertEquals(0, q1.elements());
         assertEquals(Integer.MIN_VALUE, q1.dequeue());
 
@@ -102,7 +104,7 @@ class QueueTest {
     }
 
     @Test
-    void peek() {
+    void testPeek() {
 
         assertEquals(Integer.MIN_VALUE, q1.peek());
 
@@ -120,7 +122,7 @@ class QueueTest {
     }
 
     @Test
-    void elements() {
+    void testElements() {
         q1.enqueue(3);
         assertEquals(1, q1.elements());
         q1.enqueue(5);
@@ -145,7 +147,7 @@ class QueueTest {
     }
 
     @Test
-    void size() {
+    void testSize() {
         assertEquals(5, q1.size());
         assertEquals(7, q2.size());
 
@@ -163,7 +165,7 @@ class QueueTest {
     }
 
     @Test
-    void print() {
+    void testPrint() {
         //  Set up a stream to capture console output
         ByteArrayOutputStream outputStream1 = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream1));

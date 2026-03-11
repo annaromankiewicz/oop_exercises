@@ -53,8 +53,7 @@ public class StackAdvanced {
     public void push(StackAdvanced other) {
         if (this.size >= this.top + other.top) {      // works only if the stack has enough space
             for (int i = 0; i < other.top; i++) {
-                this.stack[top] = other.stack[i];
-                top++;
+                push(other.stack[i]);
             }
         }
     }
@@ -118,14 +117,6 @@ public class StackAdvanced {
             this.stack[this.top] = 0;
             return val;
         }
-        return Integer.MIN_VALUE;
-    }
-
-    /**
-     * Returns the top element of the stack without removing it
-     */
-    public int peek() {
-        if (top > 0) return stack[top - 1];
         return Integer.MIN_VALUE;
     }
 

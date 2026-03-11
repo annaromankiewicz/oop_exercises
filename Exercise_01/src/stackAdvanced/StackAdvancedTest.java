@@ -20,7 +20,7 @@ class StackAdvancedTest {
     }
 
     @Test
-    void testPush() {
+    void testPushOtherStack() {
         // BEFORE
         s1.push(1);
         s1.push(2);
@@ -51,6 +51,12 @@ class StackAdvancedTest {
         s1.push(s2);
         assertEquals(5, s1.elements());
 
+        // s2.size < s1.size
+
+        s2.push(s1);
+        assertEquals(2, s2.elements());
+
+
         // empty stack
 
         s1.clear();
@@ -65,6 +71,7 @@ class StackAdvancedTest {
 
     @Test
     void testClone() {
+
         s1.push(1);
         s1.push(2);
         s1.push(3);
@@ -109,5 +116,6 @@ class StackAdvancedTest {
         s1.finalize();
 
         assertTrue(s1.elements() == 0 && s1.size() == 0);
+        assertEquals(Integer.MIN_VALUE, s1.pop());
     }
 }

@@ -21,29 +21,41 @@ public class Queue {
      * Clears all elements from the queue
      */
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            queue[i] = 0;
+        if (bottom != -1) {
+            if (top > bottom) {
+                for (int i = 0; i <= top; i++) {
+                    queue[i] = 0;
+                }
+            } else {
+                for (int i = bottom; i < size; i++) {
+                    queue[i] = 0;
+                }
+                for (int i = 0; i <= top; i++) {
+                    queue[i] = 0;
+                }
+            }
+            bottom = -1; // starting value of bottom
+            top = 0;
+
         }
-        bottom = -1; // starting value of bottom
-        top = 0;
     }
 
     /**
      * Enqueues an element at the back of the queue
      */
     public void enqueue(int val) {
-        if (bottom == -1) { // starting point - empty queue
-            queue[0] = val;
-            bottom++;
-        } else if (top == bottom - 1 || (top == size - 1 && bottom == 0)) {                // prevents overflow
-            return;
-        } else {
-            if (top == size - 1 && bottom != 0) {
-                top = 0;
+        if (!(top == bottom - 1 || (top == size - 1 && bottom == 0))) {
+            if (bottom == -1) { // starting point - empty queue
+                queue[0] = val;
+                bottom++;
             } else {
-                top++;
+                if (top == size - 1 && bottom != 0) {
+                    top = 0;
+                } else {
+                    top++;
+                }
+                queue[top] = val;
             }
-            queue[top] = val;
         }
     }
 
@@ -62,7 +74,7 @@ public class Queue {
             bottom = -1;            // queue is empty -> reset
             top = 0;
         } else if (bottom == size - 1) { // queue is like a ring
-                bottom = 0;
+            bottom = 0;
         } else {
             bottom++;
         }
@@ -114,7 +126,7 @@ public class Queue {
                         System.out.print(",");
                     }
                 }
-            } else {
+            } else { // bottom >= top
                 for (int i = bottom; i < size; i++) {
                     System.out.print(queue[i]);
                     System.out.print(",");
