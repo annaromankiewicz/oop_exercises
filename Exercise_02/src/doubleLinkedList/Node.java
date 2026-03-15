@@ -1,5 +1,6 @@
 package doubleLinkedList;
 
+
 public class Node {
     /** Ref to the next elem in the list, or null if it is the last */
     public Node next;
@@ -7,4 +8,10 @@ public class Node {
     public Node prev;
     /** Holds the actual data */
     public int val;
+
+    public void flipNextPrev() {
+        Node oldPrev = this.prev;
+        this.prev = next;
+        next = oldPrev;
+    }
 }
