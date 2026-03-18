@@ -22,7 +22,7 @@ class DoubleLinkedListTest {
 
 
     @Test
-    void testCopyConstructorIsDeepCopy() {
+    void testCopyConstructor() {
         DoubleLinkedList copy = new DoubleLinkedList(dl1); // dl1 = 1<->2<->3<->4
 
         // Mutate the original
@@ -44,6 +44,9 @@ class DoubleLinkedListTest {
 
     @Test
     void testPrepend() {
+        dl2.prepend(Integer.MIN_VALUE);
+        assertEquals(0, dl2.size());
+
         dl2.prepend(1);
         assertEquals(1, dl2.peekFront());
 
@@ -51,8 +54,12 @@ class DoubleLinkedListTest {
         assertEquals(3, dl2.peekFront());
     }
 
+
     @Test
     void testAppend() {
+        dl2.append(Integer.MIN_VALUE);
+        assertEquals(0, dl2.size());
+
         dl2.append(1);
         assertEquals(1, dl2.peekFront());
 
@@ -88,13 +95,12 @@ class DoubleLinkedListTest {
 
     @Test
     void testPopBackEmpty() {
-        // popBack from empty list
         assertEquals(Integer.MIN_VALUE, dl2.popBack());
     }
 
 
     @Test
-    void testPopBackFull() {
+    void testPopBack() {
         assertEquals(4, dl1.popBack());
         assertEquals(3, dl1.popBack());
         assertEquals(2, dl1.popBack());
@@ -104,17 +110,13 @@ class DoubleLinkedListTest {
 
     @Test
     void testPeekBackEmpty() {
-
-        // popBack from empty list
         assertEquals(Integer.MIN_VALUE, dl2.peekBack());
 
     }
 
     @Test
-    void testPeekBackFull() {
-
+    void testPeekBack() {
         assertEquals(4, dl1.peekBack());
-
     }
 
     @Test
@@ -123,7 +125,7 @@ class DoubleLinkedListTest {
     }
 
     @Test
-    void testSizeFull() {
+    void testSize() {
         assertEquals(4, dl1.size());
     }
 
@@ -180,13 +182,11 @@ class DoubleLinkedListTest {
     void testFinalize() {
         dl1.finalize();
         assertEquals(0, dl1.size());
-
     }
 
     @Test
     void testPrependOtherEmptyList() {
         dl1.prepend(dl2);
-
         assertEquals("1<->2<->3<->4", dl1.toString());
     }
 
@@ -208,6 +208,7 @@ class DoubleLinkedListTest {
         assertEquals("10<->20<->1<->2<->3<->4", dl1.toString());
     }
 
+
     @Test
     void testAppendOtherEmptyList() {
         dl1.append(dl2);
@@ -227,19 +228,13 @@ class DoubleLinkedListTest {
     }
 
     @Test
-    void testCloneIsDeepCopy() {
+    void testCloneOtherList() {
         dl2 = dl1.clone();
         dl1.popFront();
         assertEquals("1<->2<->3<->4", dl2.toString());
     }
 
-    @Test
-    void testCloneOtherList() {
 
-        dl2 = dl1.clone();
-        assertEquals("1<->2<->3<->4", dl1.toString());
-
-    }
 
     @Test
     void testEqualsEmpty() {
