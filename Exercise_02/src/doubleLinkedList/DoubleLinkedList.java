@@ -178,14 +178,11 @@ public class DoubleLinkedList {
      * The elements of the other list must NOT be changed!
      */
     public DoubleLinkedList(DoubleLinkedList other) {
-
         Node p = other.head;
         while (p != null) {
             append(p.val);
             p = p.next;
         }
-        head = other.head;
-        tail = other.tail;
     }
 
     /**
@@ -232,7 +229,8 @@ public class DoubleLinkedList {
      * Returns true if the other list is equal to this one, false otherwise.
      * The contents of the two lists must not be changed!
      */
-    public boolean equals(DoubleLinkedList other) {     // TODO RECURSIVE??
+    public boolean equals(DoubleLinkedList other) {
+        if (other == null) return false;
         if (this.count != other.count) return false;
         if (this.head == null && other.head == null) return true;
         boolean allElementsEqual = false;
