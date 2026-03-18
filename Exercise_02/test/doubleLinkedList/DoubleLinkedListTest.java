@@ -288,4 +288,10 @@ class DoubleLinkedListTest {
         assertFalse(dl1.search(10));
     }
 
+    @Test
+    void testAppendIntegerMinValue() {
+        dl1.append(Integer.MIN_VALUE);
+        assertFalse(dl1.search(Integer.MIN_VALUE));
+    }
+
 }

@@ -36,17 +36,19 @@ public class DoubleLinkedList {
      * Adds an element at the front of the linked list.
      */
     public void prepend(int val) {
-        Node n = new Node();
-        n.val = val;
-        if (head == null) {
-            head = n;
-            tail = n;
-        } else {
-            n.next = head;
-            head.prev = n;
-            head = n;
+        if (val != Integer.MIN_VALUE) {
+            Node n = new Node();
+            n.val = val;
+            if (head == null) {
+                head = n;
+                tail = n;
+            } else {
+                n.next = head;
+                head.prev = n;
+                head = n;
+            }
+            this.count++;
         }
-        this.count++;
     }
 
 
@@ -54,17 +56,19 @@ public class DoubleLinkedList {
      * Adds an element at the back of the linked list.
      */
     public void append(int val) {
-        Node n = new Node();
-        n.val = val;
-        if (head == null) {
-            head = n;
-            tail = n;
-        } else {
-            n.prev = tail;
-            tail.next = n;
-            tail = n;
+        if (val != Integer.MIN_VALUE) {
+            Node n = new Node();
+            n.val = val;
+            if (head == null) {
+                head = n;
+                tail = n;
+            } else {
+                n.prev = tail;
+                tail.next = n;
+                tail = n;
+            }
+            this.count++;
         }
-        this.count++;
     }
 
     /**
@@ -178,10 +182,12 @@ public class DoubleLinkedList {
      * The elements of the other list must NOT be changed!
      */
     public DoubleLinkedList(DoubleLinkedList other) {
-        Node p = other.head;
-        while (p != null) {
-            append(p.val);
-            p = p.next;
+        if (other != null) {
+            Node p = other.head;
+            while (p != null) {
+                append(p.val);
+                p = p.next;
+            }
         }
     }
 
@@ -198,10 +204,12 @@ public class DoubleLinkedList {
      * Adds all elements from another list at the front of this linked list.
      */
     public void prepend(DoubleLinkedList other) {
-        Node p = other.tail;
-        while (p!= null) {
-            prepend(p.val);
-            p = p.prev;
+        if (other != null) {
+            Node p = other.tail;
+            while (p != null) {
+                prepend(p.val);
+                p = p.prev;
+            }
         }
     }
 
@@ -209,10 +217,12 @@ public class DoubleLinkedList {
      * Adds all elements from another list at the back of this linked list.
      */
     public void append(DoubleLinkedList other) {
-        Node p = other.head;
-        while (p!= null) {
-            append(p.val);
-            p = p.next;
+        if (other != null) {
+            Node p = other.head;
+            while (p != null) {
+                append(p.val);
+                p = p.next;
+            }
         }
     }
 
@@ -267,15 +277,15 @@ public class DoubleLinkedList {
      * Returns true if the element val exists in the list, false otherwise.
      */
     public boolean search(int val) {
-        Node p = head;
-        while (p != null) {
-            if (p.val == val) return true;
-            p = p.next;
+        if (val != Integer.MIN_VALUE) {
+            Node p = head;
+            while (p != null) {
+                if (p.val == val) return true;
+                p = p.next;
+            }
         }
         return false;
     }
-
-
 }
 
 
