@@ -69,19 +69,18 @@ public class BinarySearchTree {
         /** Searches for the (first) element with the given key. Returns true
          if it could be found, false otherwise. */
         public boolean find (int key) {
-            BinaryTreeNode n = new BinaryTreeNode(key);
-            BinaryTreeNode prev = null;
+         //   BinaryTreeNode prev = null;
             BinaryTreeNode current = root;
             if (root == null) return false;
             else if (root.data == key) {
                 return true;
             } else while (current != null && current.data != key) {
                 if (key < current.data) {
-                    prev = current;
-                    current = prev.left;
+                    // prev = current;
+                    current = current.left;
                 } else {
-                    prev = current;
-                    current = prev.right;
+                   // prev = current;
+                    current = current.right;
                 }
             }
             if (current == null) {
@@ -93,7 +92,7 @@ public class BinarySearchTree {
 
         /** Removes the element with the given key. Returns true if
          the key could be found (and removed), false otherwise. */
-        public boolean remove (int key) {
+        public boolean remove (int key) { // left or right from parent check just one time
             BinaryTreeNode current = root;
             BinaryTreeNode prev = null;
             if (root == null) {
@@ -108,8 +107,8 @@ public class BinarySearchTree {
                         current = prev.right;
                     }
                 }
-                if (current != null) {
-                    if (current.data == key && current.right == null && current.left == null) { // case 1: node w/ childnodes
+                if (current != null) { // current.data == key
+                    if (current.right == null && current.left == null) { // case 1: node w/ childnodes
                         prev = null;
                     } else if ((current.left == null && current.right != null) || (current.left != null && current.right == null)) {  // case 2: node has just one child
                         // check if the node we want to remove is left or right child of parent = prev
@@ -122,13 +121,53 @@ public class BinarySearchTree {
                                 prev.right = current.left; // left child is not null
                             else prev.right = current.right; // right child is not null
                         }
-                        // implementation of case 3...
 
+                    } // case 3a
+                    if (current.left.right == null) {
+                        if (key < prev.data) {                                  // connect prev (left or right) with current.left
+                            current.left.right = current.right;                 // left child of current is new right child of old right child
+                            prev.left = current.left;                           // left child is new node (instead of current)
+                            return true;
+                        } else {
+                            current.left.right = current.right;
+                            prev.right = current.left;
+                            return true;
+                        }
+                    } else if (current.right.left == null) {
+                        if (key < prev.data) {                                  // connect prev (left or right) with current.left
+                            current.right.left = current.left;                 // left child of current is new right child of old right child
+                            prev.left = current.right;                           // left child is new node (instead of current)
+                            return true;
+                        } else {
+                            current.right.left = current.left;                 // left child of current is new right child of old right child
+                            prev.right = current.right;
+                            return true;
+                        }
                     }
+                    // case 3b
+                    BinaryTreeNode parent = current;
+                    BinaryTreeNode symmetricalNext = current.right;
+                    BinaryTreeNode p = current.right;
 
+                    while (p != null) {
+                        parent = symmetricalNext;
+                        symmetricalNext = p;
+                        p = p.left;
+                    } // p == null
+                    parent.left = symmetricalNext.right;
+                    symmetricalNext.left = current.left;
+                    symmetricalNext.right = parent;
+
+                    if (key < prev.data) {                                  // connect prev (left or right) with current.left
+                        prev.left = symmetricalNext;                           // left child is new node (instead of current)
+                        return true;
+                    } else {
+                        prev.right = symmetricalNext;
+                        return true;
+                    }
                 }
+                return true;
             }
-            return true;
         }
 
 
