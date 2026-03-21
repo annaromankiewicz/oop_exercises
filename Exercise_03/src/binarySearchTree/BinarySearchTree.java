@@ -17,6 +17,9 @@ public class BinarySearchTree {
         }
     }
 
+    /* counts the elements in array **/
+    private int top = 0;
+
     /**
      * Root node of the tree.
      **/
@@ -32,180 +35,262 @@ public class BinarySearchTree {
      * Returns true if insertion was successful, false otherwise.
      */
     public boolean insert(int elem) {
-        BinaryTreeNode prev = null;
-        BinaryTreeNode current = root;
-        boolean right = false;
+        BinaryTreeNode current;
         BinaryTreeNode n = new BinaryTreeNode(elem);
         if (root == null) {
             root = n;
             size++;
             return true;
-        } else {
-            if (root.data == elem) return false;
-            else {
-                while (current != null) {
-                    if (elem < current.data) {
-                        prev = current;
-                        current = prev.left;
-                        right = false;
-                    } else {
-                        prev = current;
-                        current = prev.right;
-                        right = true;
-                    }
-                }
-                if (right) {
-                    prev.right = n;
-                } else {
-                    prev.left = n;
-                }
-                size++;
-                return true;
-            }
-
         }
-    }
-
-        /** Searches for the (first) element with the given key. Returns true
-         if it could be found, false otherwise. */
-        public boolean find (int key) {
-         //   BinaryTreeNode prev = null;
-            BinaryTreeNode current = root;
-            if (root == null) return false;
-            else if (root.data == key) {
-                return true;
-            } else while (current != null && current.data != key) {
-                if (key < current.data) {
-                    // prev = current;
-                    current = current.left;
-                } else {
-                   // prev = current;
-                    current = current.right;
-                }
+        current = getBinaryTreeNode(elem);
+        if (current.data != elem) { // current is parent of new BinaryTreeNode with data = elem
+            if (isRight(current, elem)) {
+                current.right = n;
+            } else {
+                current.left = n;
             }
-            if (current == null) {
-                return false;
-            }
+            size++;
             return true;
         }
+        return false;
+    }
 
 
-        /** Removes the element with the given key. Returns true if
-         the key could be found (and removed), false otherwise. */
-        public boolean remove (int key) { // left or right from parent check just one time
-            BinaryTreeNode current = root;
-            BinaryTreeNode prev = null;
-            if (root == null) {
-                return false;
+    /**
+     * Searches for the (first) element with the given key. Returns true
+     * if it could be found, false otherwise.
+     */
+    public boolean find(int key) {
+        BinaryTreeNode p = getBinaryTreeNode(key);
+        if (p == null) return false;
+        else if (getBinaryTreeNode(key).data == key) return true;
+        return false;
+    }
+
+
+    // helper
+
+    /**
+     * returns the BinaryTreeNode with val = key or if it is not found it returns the last BinaryTreeNode before the location where
+     * the BinaryTreeNode with requested key should be inserted
+     */
+
+    public BinaryTreeNode getBinaryTreeNode(int key) {
+        BinaryTreeNode prev = null;
+        BinaryTreeNode current = root;
+        if (root == null) return null;
+        else if (root.data == key) {
+            return root;        // key found
+        } else while (current != null && current.data != key) {
+            if (key < current.data) {
+                prev = current;
+                current = current.left;
             } else {
-                while (current != null && current.data != key) {
-                    if (key < current.data) {
-                        prev = current;
-                        current = prev.left;
-                    } else {
-                        prev = current;
-                        current = prev.right;
-                    }
+                prev = current;
+                current = current.right;
+            }
+        }
+        if (current == null) {
+            return prev; // key not found
+        }
+        return current; // key found
+    }
+
+    // helper
+
+    /* checks if the node with val = elem is on the left or right of parent */
+    public boolean isRight(BinaryTreeNode parent, int elem) {
+        return elem > parent.data;
+    }
+
+
+    /**
+     * Removes the element with the given key. Returns true if
+     * the key could be found (and removed), false otherwise.
+     */
+    public boolean remove(int key) { // left or right from parent check just one time
+        BinaryTreeNode current = root;
+        BinaryTreeNode parent = null;
+        if (root == null) {
+            return false;
+        } else {
+            current = getBinaryTreeNode(key); // node we want to remove if current.data = key
+            parent = getParentNode(key);
+        }
+        if (current.data == key) {
+            boolean right = isRight(parent, key); // check if the node we want to remove is left or right child of parent
+            if (current.right == null && current.left == null) { // case 1: node w/ childnodes
+                current = null;
+            } else if (current.left == null || current.right == null) {  // case 2: node has just one child
+                // check if the node we want to remove is left or right child of parent = prev
+                if (right) { // child we want to remove is on the right
+                    if (current.left == null)
+                        parent.right = current.right; // right child replaces current
+                    else parent.right = current.left; // right child is not null
+                } else { // remove on left side of parent
+                    if (current.left == null)
+                        parent.left = current.right;
+                    else parent.left = current.left;
                 }
-                if (current != null) { // current.data == key
-                    if (current.right == null && current.left == null) { // case 1: node w/ childnodes
-                        prev = null;
-                    } else if ((current.left == null && current.right != null) || (current.left != null && current.right == null)) {  // case 2: node has just one child
-                        // check if the node we want to remove is left or right child of parent = prev
-                        if (key < prev.data) { // child we want to remove is on the left
-                            if (current.left != null)
-                                prev.left = current.left; // left child is not null
-                            else prev.right = current.right; // right child is not null
-                        } else { // right child of parent
-                            if (current.left != null)
-                                prev.right = current.left; // left child is not null
-                            else prev.right = current.right; // right child is not null
-                        }
 
-                    } // case 3a
-                    if (current.left.right == null) {
-                        if (key < prev.data) {                                  // connect prev (left or right) with current.left
-                            current.left.right = current.right;                 // left child of current is new right child of old right child
-                            prev.left = current.left;                           // left child is new node (instead of current)
-                            return true;
-                        } else {
-                            current.left.right = current.right;
-                            prev.right = current.left;
-                            return true;
-                        }
-                    } else if (current.right.left == null) {
-                        if (key < prev.data) {                                  // connect prev (left or right) with current.left
-                            current.right.left = current.left;                 // left child of current is new right child of old right child
-                            prev.left = current.right;                           // left child is new node (instead of current)
-                            return true;
-                        } else {
-                            current.right.left = current.left;                 // left child of current is new right child of old right child
-                            prev.right = current.right;
-                            return true;
-                        }
-                    }
-                    // case 3b
-                    BinaryTreeNode parent = current;
-                    BinaryTreeNode symmetricalNext = current.right;
-                    BinaryTreeNode p = current.right;
-
-                    while (p != null) {
-                        parent = symmetricalNext;
-                        symmetricalNext = p;
-                        p = p.left;
-                    } // p == null
-                    parent.left = symmetricalNext.right;
-                    symmetricalNext.left = current.left;
-                    symmetricalNext.right = parent;
-
-                    if (key < prev.data) {                                  // connect prev (left or right) with current.left
-                        prev.left = symmetricalNext;                           // left child is new node (instead of current)
-                        return true;
-                    } else {
-                        prev.right = symmetricalNext;
-                        return true;
-                    }
+            } // case 3a
+            if (current.left.right == null) {
+                if (right) {                                  // connect prev (left or right) with current.left
+                    current.left.right = current.right;
+                    parent.right = current.left;
+                    return true;
+                } else {
+                    current.left.right = current.right;                 // left child of current is new right child of old right child
+                    parent.left = current.left;                           // left child is new node (instead of current)
+                    return true;
                 }
+            } else if (current.right.left == null) {
+                if (right) {                                  // connect prev (left or right) with current.left
+                    current.right.left = current.left;                 // left child of current is new right child of old right child
+                    parent.right = current.right;
+                    return true;
+                } else {
+                    current.right.left = current.left;                 // left child of current is new right child of old right child
+                    parent.left = current.right;                           // left child is new node (instead of current)
+                    return true;
+                }
+            }
+            // case 3b
+            parent = current;
+            BinaryTreeNode symmetricalNext = current.right;
+            BinaryTreeNode p = current.right;
+
+            while (p != null) {
+                parent = symmetricalNext;
+                symmetricalNext = p;
+                p = p.left;
+            } // p == null
+            parent.left = symmetricalNext.right;
+            symmetricalNext.left = current.left;
+            symmetricalNext.right = parent;
+
+            if (right) {                                  // connect parent (left or right) with current.left
+                parent.left = symmetricalNext;                           // left child is new node (instead of current)
+                return true;
+            } else {
+                parent.right = symmetricalNext;
                 return true;
             }
         }
+        return true;
+    }
 
 
-        /** Returns the number of elements stored in the tree. */
-        public int size () {
-            return size;
+    /**
+     * Returns the number of elements stored in the tree.
+     */
+    public int size() {
+        return size;
+    }
+
+    //helper
+
+    /**
+     * Returns the parent node of element with the given key
+     */
+
+    public BinaryTreeNode getParentNode(int key) {
+        BinaryTreeNode n = new BinaryTreeNode(key);
+        BinaryTreeNode prev = null;
+        BinaryTreeNode current = root;
+        if (root == null) return null;
+        else if (root.data == key) {
+            return null; // check what to return if elem is in root
+        } else while (current.data != key && current != null) {
+            if (key < current.data) {
+                prev = current;
+                current = prev.left;
+            } else {
+                prev = current;
+                current = prev.right;
+            }
+        }
+        if (current == null) {
+            return null;
+        }
+        return prev;
+    }
+
+
+    /**
+     * Returns the parent element of the given key. Integer.MIN_VALUE if
+     * no parent can be found.
+     */
+    public int getParent(int key) {
+        BinaryTreeNode parent = getParentNode(key);
+        if (parent == null) return Integer.MIN_VALUE;
+        return parent.data;
+    }
+
+
+    /**
+     * Returns the elements of the tree in ascending (inorder traversal)
+     * or descending (reverse inorder traversal) order.
+     */
+    public int[] toArray(boolean ascending) {
+        int[] a = new int[size];
+        return inorder(a, root, root.left, root.right);
+    }
+
+    //helper
+
+    /**
+     * Recursive methode to get always the value of the lower visited node
+     */
+    int[] inorder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+        if (root == null) return null;
+        if (isExternalNode(root)) {
+            a[top] = root.data;
+            top++;
+            return a;
         }
 
+        if (left != null) {
+            if (!isExternalNode(left)) {
+                inorder(a, left, left.left, left.right);
+            } else { // left is external node
+                a[top++] = left.data;
+                a[top++] = root.data;
 
-        /** Returns the parent element of the given key. Integer.MIN_VALUE if
-         no parent can be found. */
-        public int getParent(int key){
-            BinaryTreeNode n = new BinaryTreeNode(key);
-            BinaryTreeNode prev = null;
-            BinaryTreeNode current = root;
-            if (root == null) return Integer.MIN_VALUE;
-            else if (root.data == key) {
-                return Integer.MIN_VALUE;
-            } else while (current.data != key && current != null) {
-                if (key < current.data) {
-                    prev = current;
-                    current = prev.left;
-                } else {
-                    prev = current;
-                    current = prev.right;
+                if (right != null) {
+                    if (isExternalNode(right)) {
+                        a[top++] = right.data; // just if right is externalNode!!
+                    } else {
+                        inorder(a, right, right.left, right.right);
+                    }
+                    return a; // important to avoid to print a[top] two times
                 }
             }
-            if (current == null) {
-                return Integer.MIN_VALUE;
-            }
-            return prev.data;
+        }
+        if (top < size) {
+            a[top++] = root.data;
         }
 
+
+        // left == null
+        if (right != null) {
+            if (isExternalNode(right)) {
+                a[top++] = right.data; // just if right is internalNode!!
+            } else {
+                inorder(a, right, right.left, right.right); //  inorder(a, root.right, root.right.left, root.right.right);
+            }
+            return a;
+        }
+
+        return a;
+    }
+
+    // helper
+    boolean isExternalNode(BinaryTreeNode p) {
+        return (p.left == null && p.right == null);
+    }
+
 //
-//        /** Returns the elements of the tree in ascending (inorder traversal)
-//         or descending (reverse inorder traversal) order. */
-//        public int[] toArray (boolean ascending){
-//        }
 //        /** Returns the elements of the tree (postorder traversal). */
 //        public int[] toArrayPostOrder () {
 //        }
@@ -214,8 +299,9 @@ public class BinarySearchTree {
 //        }
 //        /** Returns largest number stored in the tree. Integer.MIN_VALUE if
 //         no largest element can be found*/
-//        public int max () {
+//        public int max () { // right right right till next is null
 //        }
+//
 //        /** Returns smallest number stored in the tree. Integer.MIN_VALUE if
 //         no smallest element can be found */
 //        public int min () {
@@ -223,6 +309,7 @@ public class BinarySearchTree {
 //        /** Represents the tree in a human readable form. */
 //        public String toString () {
 //        }
-//    }
-
 }
+
+
+
