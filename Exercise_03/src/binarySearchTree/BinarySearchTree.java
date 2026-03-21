@@ -19,6 +19,8 @@ public class BinarySearchTree {
 
     /* counts the elements in array **/
     private int top = 0;
+    private int min;
+    private int max;
 
     /**
      * Root node of the tree.
@@ -40,14 +42,18 @@ public class BinarySearchTree {
         if (root == null) {
             root = n;
             size++;
+            min = root.data;
+            max = root.data;
             return true;
         }
         current = getBinaryTreeNode(elem);
         if (current.data != elem) { // current is parent of new BinaryTreeNode with data = elem
             if (isRight(current, elem)) {
                 current.right = n;
+                if (n.data > max) max = n.data;
             } else {
                 current.left = n;
+                if (n.data < min) min = n.data;
             }
             size++;
             return true;
@@ -99,7 +105,7 @@ public class BinarySearchTree {
     // helper
 
     /* checks if the node with val = elem is on the left or right of parent */
-    public boolean isRight(BinaryTreeNode parent, int elem) {
+     boolean isRight(BinaryTreeNode parent, int elem) {
         return elem > parent.data;
     }
 
@@ -235,7 +241,7 @@ public class BinarySearchTree {
     public int[] toArray(boolean ascending) {
         top = 0;
         int[] a = new int[size];
-        a = inorder(a, root, root.left, root.right);
+        a = inorder(a, root);
         if (ascending) {
             return a;
         } else {
@@ -252,23 +258,23 @@ public class BinarySearchTree {
     /**
      * Recursive methode to get always the value of the lower visited node
      */
-    int[] inorder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+    int[] inorder(int[] a, BinaryTreeNode root) {
         if (root == null) return a;
-        if (left != null) {
-            if (isExternalNode(left)) {
-                a[top++] = left.data;
+        if (root.left != null) {
+            if (isExternalNode(root.left)) {
+                a[top++] = root.left.data;
             } else {
-            inorder(a, left, left.left, left.right);
+                inorder(a, root.left);
             }
         }
         if (top < size) {
             a[top++] = root.data;
         }
-        if (right != null) {
-            if (isExternalNode(right)) {
-                a[top++] = right.data;
+        if (root.right != null) {
+            if (isExternalNode(root.right)) {
+                a[top++] = root.right.data;
             } else {
-                inorder(a, right, right.left, right.right);
+                inorder(a, root.right);
             }
         }
         return a;
@@ -287,30 +293,32 @@ public class BinarySearchTree {
     public int[] toArrayPostOrder() {
         top = 0;
         int[] a = new int[size];
-        return postOrder(a, root, root.left, root.right);
+        return postOrder(a, root);
     }
 
     // helper
+
     /**
      * Recursive methode to get always the value of the right visited node
      */
-    int[] postOrder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+    int[] postOrder(int[] a, BinaryTreeNode root) {
         if (root == null) return a;
         if (isExternalNode(root)) {
             a[top] = root.data;
             return a;
         }
-        if (left != null) {
-            if (isExternalNode(left)) {
-                a[top++]= left.data;
+        if (root.left != null) {
+            if (isExternalNode(root.left)) {
+                a[top++] = root.left.data;
             } else {
-                postOrder(a, left, left.left, left.right);
+                postOrder(a, root.left);
             }
-        } if (right != null) {
-            if (isExternalNode(right)) {
-                a[top++] = right.data;
+        }
+        if (root.right != null) {
+            if (isExternalNode(root.right)) {
+                a[top++] = root.right.data;
             } else {
-                postOrder(a, right, right.left, right.right);
+                postOrder(a, root.right);
             }
         }
         if (top < size) {
@@ -320,35 +328,38 @@ public class BinarySearchTree {
     }
 
 
-        /** Returns the elements of the tree (preorder traversal). */
-        public int[] toArrayPreOrder () {
-            top = 0;
-            int[] a = new int[size];
-            return preOrder(a, root, root.left, root.right);
-        }
+    /**
+     * Returns the elements of the tree (preorder traversal).
+     */
+    public int[] toArrayPreOrder() {
+        top = 0;
+        int[] a = new int[size];
+        return preOrder(a, root);
+    }
 
     // helper
+
     /**
      * Recursive methode to get always the value of the left visited node
      */
-    int[] preOrder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+    int[] preOrder(int[] a, BinaryTreeNode root) {
         if (root == null) return a;
         a[top++] = root.data;
         if (isExternalNode(root)) {
             return a;
         } else {
-            if (left != null) {
-                if (isExternalNode(left)) {
-                    a[top++] = left.data;
+            if (root.left != null) {
+                if (isExternalNode(root.left)) {
+                    a[top++] = root.left.data;
                 } else {
-                    preOrder(a,left, left.left, left.right);
+                    preOrder(a, root.left);
                 }
             }
-            if (right != null) {
-                if (isExternalNode(right)) {
-                    a[top++] = right.data;
+            if (root.right != null) {
+                if (isExternalNode(root.right)) {
+                    a[top++] = root.right.data;
                 } else {
-                    preOrder(a,right, right.left, right.right);
+                    preOrder(a, root.right);
                 }
             }
         }
@@ -356,16 +367,17 @@ public class BinarySearchTree {
     }
 
 
+        /** Returns largest number stored in the tree. Integer.MIN_VALUE if
+         no largest element can be found*/
+        public int max () { // right right right till next is null
+            return this.max;
+        }
 
-//        /** Returns largest number stored in the tree. Integer.MIN_VALUE if
-//         no largest element can be found*/
-//        public int max () { // right right right till next is null
-//        }
-//
-//        /** Returns smallest number stored in the tree. Integer.MIN_VALUE if
-//         no smallest element can be found */
-//        public int min () {
-//        }
+        /** Returns smallest number stored in the tree. Integer.MIN_VALUE if
+         no smallest element can be found */
+        public int min () {
+            return this.min;
+        }
 //        /** Represents the tree in a human readable form. */
 //        public String toString () {
 //        }

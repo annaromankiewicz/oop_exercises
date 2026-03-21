@@ -356,10 +356,16 @@ class BinarySearchTreeTest {
 
     @Test
     void max() {
+        assertEquals(100, b1.max());
+        assertEquals(15, b2.max());
+        assertEquals(5, b3.max());
     }
 
     @Test
     void min() {
+        assertEquals(1, b1.min());
+        assertEquals(3, b2.min());
+        assertEquals(1, b3.min());
     }
 
     @Test
