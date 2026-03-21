@@ -260,7 +260,7 @@ class BinarySearchTreeTest {
     // ── toArray ───────────────────────────────────────────────────────────────
 
     @Test
-    void toArrayBalancedTree() {
+    void toArraySymmetricTree() {
         // b2: 10, 5, 15, 3, 7, 14, 9  →  ascending: 3, 5, 7, 9, 10, 14, 15
         int[] expected = {3, 5, 7, 9, 10, 14, 15};
         assertArrayEquals(expected, b2.toArray(true));

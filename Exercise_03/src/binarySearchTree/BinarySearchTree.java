@@ -253,45 +253,27 @@ public class BinarySearchTree {
      * Recursive methode to get always the value of the lower visited node
      */
     int[] inorder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
-        if (root == null) return null;
-        if (isExternalNode(root)) {
-            a[top] = root.data;
-            top++;
-            return a;
-        }
-
+        if (root == null) return a;
         if (left != null) {
-            if (!isExternalNode(left)) {
-                inorder(a, left, left.left, left.right);
-            } else { // left is external node
+            if (isExternalNode(left)) {
                 a[top++] = left.data;
-                a[top++] = root.data;
-
-                if (right != null) {
-                    if (isExternalNode(right)) {
-                        a[top++] = right.data; // just if right is externalNode!!
-                    } else {
-                        inorder(a, right, right.left, right.right);
-                    }
-                    return a; // important to avoid to print a[top] two times
-                }
+            } else {
+            inorder(a, left, left.left, left.right);
             }
         }
         if (top < size) {
             a[top++] = root.data;
         }
-
-        // left == null
         if (right != null) {
             if (isExternalNode(right)) {
-                a[top++] = right.data; // just if right is internalNode!!
+                a[top++] = right.data;
             } else {
-                inorder(a, right, right.left, right.right); //  inorder(a, root.right, root.right.left, root.right.right);
+                inorder(a, right, right.left, right.right);
             }
-            return a;
         }
         return a;
     }
+
 
     // helper
     boolean isExternalNode(BinaryTreeNode p) {
