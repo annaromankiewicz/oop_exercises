@@ -47,39 +47,172 @@ class BinarySearchTreeTest {
 
     }
 
+    // ── insert ────────────────────────────────────────────────────────────────
+
     @Test
-    void insert() {
-        b2.insert(10);
-        assertTrue(b2.find(10));
+    void insertDuplicateReturnsFalse() {
+        assertFalse(b2.insert(10)); // 10 is root of b2
+        assertFalse(b2.insert(9));  // 9 is a leaf in b2
     }
+
+    @Test
+    void insertDuplicateDoesNotIncrementSize() {
+        int before = b2.size();
+        b2.insert(10); // duplicate
+        assertEquals(before, b2.size());
+    }
+
+    @Test
+    void insertIntoEmptyTree() {
+        BinarySearchTree empty = new BinarySearchTree();
+        assertTrue(empty.insert(42));
+        assertEquals(1, empty.size());
+        assertEquals(42, empty.root.data);
+    }
+
+    @Test
+    void insertMaintainsOrder() {
+        // root 10, insert smaller and larger
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);
+        tree.insert(15);
+        assertEquals(5, tree.root.left.data);
+        assertEquals(15, tree.root.right.data);
+    }
+
+    // ── find ──────────────────────────────────────────────────────────────────
 
     @Test
     void findEmpty() {
-
         assertFalse(b4.find(1));
     }
 
-
     @Test
-    void find() {
-        // key is root
-        assertTrue(b1.find(3));
-
-        assertTrue(b1.find(11));
-
-        assertFalse(b1.find(100));
-
+    void findRoot() {
+        assertTrue(b2.find(10)); // 10 is the root of b2
     }
 
     @Test
-    void remove() {
-
+    void findLeaf() {
+        assertTrue(b2.find(9));  // 9 is a leaf in b2 (right child of 7)
+        assertTrue(b2.find(3));  // 3 is a leaf (left child of 5)
     }
 
     @Test
-    void size() {
-        assertEquals(6, b1.size());
+    void findNonExistent() {
+        assertFalse(b2.find(42));
+        assertFalse(b2.find(0));
+        assertFalse(b2.find(-1));
     }
+
+    @Test
+    void findAfterInsert() {
+        b2.insert(100);
+        assertTrue(b2.find(100));
+    }
+
+    // ── size ──────────────────────────────────────────────────────────────────
+
+    @Test
+    void sizeEmpty() {
+        assertEquals(0, b4.size());
+    }
+
+    @Test
+    void sizeAfterInserts() {
+        // b2 was built with 7 distinct inserts
+        assertEquals(7, b2.size());
+        // b1 was built with 15 distinct inserts
+        assertEquals(15, b1.size());
+        // b3 was built with 5 distinct inserts
+        assertEquals(5, b3.size());
+    }
+
+    @Test
+    void sizeNotChangedByDuplicate() {
+        int before = b2.size();
+        b2.insert(5);  // duplicate
+        assertEquals(before, b2.size());
+    }
+
+    // ── remove ────────────────────────────────────────────────────────────────
+
+    @Test
+    void removeFromEmptyTree() {
+        BinarySearchTree empty = new BinarySearchTree();
+        assertFalse(empty.remove(5));
+    }
+
+    @Test
+    void removeNonExistentKey() {
+        assertFalse(b2.remove(42));
+    }
+
+    @Test
+    void removeLeafNode() {
+        // b2 tree: 10 -> 5(left=3, right=7(right=9)), 15(left=14)
+        // 9 is a leaf
+        assertTrue(b2.remove(9));
+        assertFalse(b2.find(9));
+        assertNull(b2.getBinaryTreeNode(7).right); // parent of 9 should now have no right child
+    }
+
+    @Test
+    void removeNodeWithOnlyRightChild() {
+        // 15 has only a left child (14), so let's build a node with only a right child
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);
+        tree.insert(20);
+        tree.insert(25); // 20 has only right child 25
+        assertTrue(tree.remove(20));
+        assertFalse(tree.find(20));
+        assertTrue(tree.find(25));
+        assertEquals(10, tree.getParent(25)); // 25 should now be a direct child of 10
+    }
+
+    @Test
+    void removeNodeWithOnlyLeftChild() {
+        // 15 in b2 has only left child 14
+        assertTrue(b2.remove(15));
+        assertFalse(b2.find(15));
+        assertTrue(b2.find(14));
+        assertEquals(10, b2.getParent(14)); // 14 promoted to child of root
+    }
+
+    @Test
+    void removeNodeWithTwoChildren() {
+        // Remove 5 from b2 (has left=3, right=7)
+        assertTrue(b2.remove(5));
+        assertFalse(b2.find(5));
+        // children must still be reachable
+        assertTrue(b2.find(3));
+        assertTrue(b2.find(7));
+        assertTrue(b2.find(9));
+    }
+
+    @Test
+    void removeRootSingleNode() {
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(42);
+        tree.remove(42);
+        assertFalse(tree.find(42));
+        assertEquals(0, tree.size());
+    }
+
+    @Test
+    void removeMaintainsSearchProperty() {
+        // After any removal, toArray(true) must still be sorted
+        b2.remove(5);
+        int[] result = b2.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1],
+                    "Array not sorted at index " + i + ": " + result[i] + " >= " + result[i + 1]);
+        }
+    }
+
+    // ── getParent ─────────────────────────────────────────────────────────────
 
     @Test
     void getParentEmpty() {
@@ -91,6 +224,11 @@ class BinarySearchTreeTest {
         assertEquals(Integer.MIN_VALUE, b1.getParent(15));
     }
 
+    @Test
+    void getParentNonExistentKey() {
+        // key is not in the tree at all
+        assertEquals(Integer.MIN_VALUE, b2.getParent(42));
+    }
 
     @Test
     void getParent() {
@@ -119,36 +257,102 @@ class BinarySearchTreeTest {
         } return isEqual;
     }
 
+    // ── toArray ───────────────────────────────────────────────────────────────
+
     @Test
-    void toArray() {
-        int[] a = {1, 5, 6, 7, 10, 11, 14, 15, 17, 18, 20, 30, 39, 40, 100};
-
-//        b1.toArray(true);
-//        assertTrue(equals(a, b1.toArray(true)));
-//
-        int[] b = {3, 5, 7, 9, 10, 14, 15};
-
-//        b2.toArray(true);
-//        b2.toArray(true);
-
-
-        int[] array = b2.toArray(true);
-        assertTrue(equals(b, array));
-//
-        int[] c = {1, 2, 3, 4, 5};
-
-//        assertTrue(equals(c, b3.toArray(true)));
-
-
+    void toArrayBalancedTree() {
+        // b2: 10, 5, 15, 3, 7, 14, 9  →  ascending: 3, 5, 7, 9, 10, 14, 15
+        int[] expected = {3, 5, 7, 9, 10, 14, 15};
+        assertArrayEquals(expected, b2.toArray(true));
     }
 
     @Test
-    void toArrayPostOrder() {
+    void toArrayRightSkewed() {
+        // b3 inserts 1,2,3,4,5 in order → right-skewed tree; inorder must still be sorted
+        int[] expected = {1, 2, 3, 4, 5};
+        assertArrayEquals(expected, b3.toArray(true));
     }
 
     @Test
-    void toArrayPreOrder() {
+    void toArraySingleElement() {
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(7);
+        assertArrayEquals(new int[]{7}, tree.toArray(true));
     }
+
+    @Test
+    void toArrayLargeTree() {
+        // b1 has 15 elements; verify they come back fully sorted
+        // ascending
+        int[] expectedAscending = {1, 5, 6, 7, 10, 11, 14, 15, 17, 18, 20, 30, 39, 40, 100};
+
+        assertArrayEquals(expectedAscending, b1.toArray(true));
+
+        //descending
+        int[] expectedDescending = {100, 40, 39, 30, 20, 18, 17, 15, 14, 11, 10, 7, 6, 5, 1};
+        assertArrayEquals(expectedDescending, b1.toArray(false));
+    }
+
+    @Test
+    void toArrayCalledTwiceGivesSameResult() {
+        // Calling toArray twice must not corrupt state (instance variable 'top' must reset)
+        int[] first  = b2.toArray(true);
+        int[] second = b2.toArray(true);
+        assertArrayEquals(first, second);
+    }
+
+    @Test
+    void toArrayWithDegenerateTree() {
+        //ascending
+        int[] expectedAscending = {1,2,3,4,5};
+        assertArrayEquals(expectedAscending, b3.toArray(true));
+
+        //descending
+        int[] expectedDescending = {5,4,3,2,1};
+        assertArrayEquals(expectedDescending, b3.toArray(false));
+    }
+
+    @Test
+    void toArrayPostOrderSymmetricBinaryTree() {
+        int[] expected = {1,6,5,10,14,11,7,17,20,18,39,100,40,30,15};
+
+        assertTrue(equals(expected,b1.toArrayPostOrder()));
+    }
+
+
+    @Test
+    void toArrayPostOrder_b2() {
+        assertArrayEquals(new int[]{3, 9, 7, 5, 14, 15, 10}, b2.toArrayPostOrder());
+    }
+
+
+
+    @Test
+    void toArrayPostOrder_b3() {
+        assertArrayEquals(new int[]{5, 4, 3, 2, 1}, b3.toArrayPostOrder());
+    }
+
+
+
+    @Test
+    void toArrayPreOrder_b1() {
+        assertArrayEquals(new int[]{15, 7, 5, 1, 6, 11, 10, 14, 30, 18, 17, 20, 40, 39, 100}, b1.toArrayPreOrder());
+    }
+
+
+    @Test
+    void toArrayPreOrder_b2() {
+        assertArrayEquals(new int[]{10, 5, 3, 7, 9, 15, 14}, b2.toArrayPreOrder());
+    }
+
+
+    @Test
+    void toArrayPreOrder_b3() {
+        assertArrayEquals(new int[]{1, 2, 3, 4, 5}, b3.toArrayPreOrder());
+    }
+
+
+
 
     @Test
     void max() {

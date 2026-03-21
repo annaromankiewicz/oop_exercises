@@ -201,7 +201,7 @@ public class BinarySearchTree {
         if (root == null) return null;
         else if (root.data == key) {
             return null; // check what to return if elem is in root
-        } else while (current.data != key && current != null) {
+        } else while (current != null && current.data != key) {
             if (key < current.data) {
                 prev = current;
                 current = prev.left;
@@ -233,8 +233,18 @@ public class BinarySearchTree {
      * or descending (reverse inorder traversal) order.
      */
     public int[] toArray(boolean ascending) {
+        top = 0;
         int[] a = new int[size];
-        return inorder(a, root, root.left, root.right);
+        a = inorder(a, root, root.left, root.right);
+        if (ascending) {
+            return a;
+        } else {
+            int[] b = new int[size];
+            for (int i = 0, j = size - 1; i < size && j >= 0; i++, j--) {
+                b[i] = a[j];
+            }
+            return b;
+        }
     }
 
     //helper
@@ -271,7 +281,6 @@ public class BinarySearchTree {
             a[top++] = root.data;
         }
 
-
         // left == null
         if (right != null) {
             if (isExternalNode(right)) {
@@ -281,7 +290,6 @@ public class BinarySearchTree {
             }
             return a;
         }
-
         return a;
     }
 
@@ -290,13 +298,83 @@ public class BinarySearchTree {
         return (p.left == null && p.right == null);
     }
 
-//
-//        /** Returns the elements of the tree (postorder traversal). */
-//        public int[] toArrayPostOrder () {
-//        }
-//        /** Returns the elements of the tree (preorder traversal). */
-//        public int[] toArrayPreOrder () {
-//        }
+
+    /**
+     * Returns the elements of the tree (postorder traversal).
+     */
+    public int[] toArrayPostOrder() {
+        top = 0;
+        int[] a = new int[size];
+        return postOrder(a, root, root.left, root.right);
+    }
+
+    // helper
+    /**
+     * Recursive methode to get always the value of the right visited node
+     */
+    int[] postOrder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+        if (root == null) return a;
+        if (isExternalNode(root)) {
+            a[top] = root.data;
+            return a;
+        }
+        if (left != null) {
+            if (isExternalNode(left)) {
+                a[top++]= left.data;
+            } else {
+                postOrder(a, left, left.left, left.right);
+            }
+        } if (right != null) {
+            if (isExternalNode(right)) {
+                a[top++] = right.data;
+            } else {
+                postOrder(a, right, right.left, right.right);
+            }
+        }
+        if (top < size) {
+            a[top++] = root.data;
+        }
+        return a;
+    }
+
+
+        /** Returns the elements of the tree (preorder traversal). */
+        public int[] toArrayPreOrder () {
+            top = 0;
+            int[] a = new int[size];
+            return preOrder(a, root, root.left, root.right);
+        }
+
+    // helper
+    /**
+     * Recursive methode to get always the value of the left visited node
+     */
+    int[] preOrder(int[] a, BinaryTreeNode root, BinaryTreeNode left, BinaryTreeNode right) {
+        if (root == null) return a;
+        a[top++] = root.data;
+        if (isExternalNode(root)) {
+            return a;
+        } else {
+            if (left != null) {
+                if (isExternalNode(left)) {
+                    a[top++] = left.data;
+                } else {
+                    preOrder(a,left, left.left, left.right);
+                }
+            }
+            if (right != null) {
+                if (isExternalNode(right)) {
+                    a[top++] = right.data;
+                } else {
+                    preOrder(a,right, right.left, right.right);
+                }
+            }
+        }
+        return a;
+    }
+
+
+
 //        /** Returns largest number stored in the tree. Integer.MIN_VALUE if
 //         no largest element can be found*/
 //        public int max () { // right right right till next is null
