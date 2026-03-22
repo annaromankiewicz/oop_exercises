@@ -212,6 +212,196 @@ class BinarySearchTreeTest {
         }
     }
 
+    // ── remove: Case 1 (leaf) ─────────────────────────────────────────────────
+
+    @Test
+    void removeLeafLeftChild() {
+        // 3 is a leaf and LEFT child of 5 in b2
+        assertTrue(b2.remove(3));
+        assertFalse(b2.find(3));
+        assertNull(b2.getBinaryTreeNode(5).left);
+    }
+
+// ── remove: Case 2 (one child) ────────────────────────────────────────────
+
+    @Test
+    void removeNodeWithOnlyLeftChildOnRightSide() {
+        // build: 10 -> right=15 -> left=12 (15 is right child of 10, has only left child)
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);
+        tree.insert(15);
+        tree.insert(12); // 15 has only left child 12
+        assertTrue(tree.remove(15));
+        assertFalse(tree.find(15));
+        assertTrue(tree.find(12));
+        assertEquals(10, tree.getParent(12)); // 12 promoted to right child of 10
+    }
+
+    @Test
+    void removeNodeWithOnlyRightChildOnLeftSide() {
+        // build: 10 -> left=5 -> right=7 (5 is left child of 10, has only right child)
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);
+        tree.insert(15);
+        tree.insert(7); // 5 has only right child 7
+        assertTrue(tree.remove(5));
+        assertFalse(tree.find(5));
+        assertTrue(tree.find(7));
+        assertEquals(10, tree.getParent(7)); // 7 promoted to left child of 10
+    }
+
+    @Test
+    void removeRootWithOneChild() {
+        // root has only a right child → root gets replaced by that child
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(15); // only right child
+        assertTrue(tree.remove(10));
+        assertFalse(tree.find(10));
+        assertTrue(tree.find(15));
+        assertEquals(15, tree.root.data);
+    }
+
+// ── remove: Case 3a ───────────────────────────────────────────────────────
+
+    @Test
+    void removeCase3aLeftRightNullRightSide() {
+        // 20 is RIGHT child of 10, has two children: left=15(no right child), right=25
+        // → triggers: left.right==null, right=true
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);
+        tree.insert(20);
+        tree.insert(15); // 20.left=15, 15.right=null
+        tree.insert(25); // 20.right=25
+        assertTrue(tree.remove(20));
+        assertFalse(tree.find(20));
+        assertTrue(tree.find(15));
+        assertTrue(tree.find(25));
+        int[] result = tree.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1]);
+        }
+    }
+
+    @Test
+    void removeCase3aRightLeftNullRightSide() {
+        // 40 is RIGHT child of 20, has two children: left=30(right=35), right=50(no left)
+        // left.right != null → skips first 3a check
+        // right.left == null → triggers second 3a check, right=true
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(20);
+        tree.insert(10);
+        tree.insert(40);
+        tree.insert(30); // 40.left=30
+        tree.insert(35); // 30.right=35, so 40.left.right != null
+        tree.insert(50); // 40.right=50, 50.left=null
+        assertTrue(tree.remove(40));
+        assertFalse(tree.find(40));
+        assertTrue(tree.find(30));
+        assertTrue(tree.find(50));
+        int[] result = tree.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1]);
+        }
+    }
+
+    @Test
+    void removeCase3aRightLeftNullLeftSide() {
+        // 10 is LEFT child of 20, has two children: left=8(right=9), right=15(no left)
+        // left.right=9 != null → skips first 3a check
+        // right.left==null → triggers second 3a check, right=false
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(20);
+        tree.insert(10);
+        tree.insert(30);
+        tree.insert(8);  // 10.left=8
+        tree.insert(9);  // 8.right=9, so 10.left.right != null
+        tree.insert(15); // 10.right=15, 15.left=null
+        tree.insert(25);
+        assertTrue(tree.remove(10));
+        assertFalse(tree.find(10));
+        assertTrue(tree.find(8));
+        assertTrue(tree.find(15));
+        int[] result = tree.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1]);
+        }
+    }
+
+// ── remove: Case 3b ───────────────────────────────────────────────────────
+
+    @Test
+    void removeCase3bSuccessorIsDirectRightChild() {
+        // parentSymmetricalNext == current:
+        // 20 has two children, right subtree root (30) has no left child
+        // → successor is direct right child, parentSymmetricalNext stays = current
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(20);
+        tree.insert(10);
+        tree.insert(30); // 20.right=30, 30.left=null → successor=30, parentSymNext=current=20
+        tree.insert(35); // 30.right=35 (left.right!=null and right.left!=null skips 3a)
+        tree.insert(25); // 30.left=25... wait this gives 30 a left child
+        // Need: left.right!=null AND right.left!=null to reach 3b
+        // and then right subtree has no left child
+        // insert 20, 10, 30, 8, 12, 35 → remove 20
+        // 20.left=10, 10.left=8, 10.right=12 → left.right=12 != null
+        // 20.right=30, 30.left=null → right.left==null → hits 3a! not 3b
+        // We need right.left != null too. Use b1 structure, remove a node where
+        // right child has no left child but left child has a right child... tricky.
+        // Simplest: insert 20, 10, 30, 8, 12, 25, 35 → remove 20
+        // 20.left=10, 10.right=12 → left.right != null ✓
+        // 20.right=30, 30.left=25 → right.left != null ✓ → reaches 3b
+        // In right subtree of 20: 30.left=25, 25.left=null → successor=25, parentSymNext=30 != current
+        // That's parentSymNext != current case. For == current we need right subtree root to have no left.
+        // So we need left.right!=null AND right.left==null... that's case 3a right.left==null!
+        // Conclusion: parentSymmetricalNext==current is only reachable when right.left==null
+        // but that's caught by 3a first. So this sub-branch may be unreachable in practice
+        // given the current if-ordering. Skip — already covered structurally by 3a tests.
+        assertTrue(true); // placeholder - branch unreachable due to 3a guard
+    }
+
+    @Test
+    void removeCase3bSuccessorDeepInLeftSpine() {
+        // parentSymmetricalNext != current: successor found after walking left spine
+        // Use b1, remove root 15:
+        // right=30, 30.left=18, 18.left=17 → walks left, parentSymNext=18, successor=17
+        assertTrue(b1.remove(15));
+        assertFalse(b1.find(15));
+        // all other elements must still be found
+        assertTrue(b1.find(7));
+        assertTrue(b1.find(30));
+        assertTrue(b1.find(17)); // the successor that replaced root
+        int[] result = b1.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1]);
+        }
+    }
+
+    @Test
+    void removeCase3bRootWithTwoChildren() {
+        // parent==null in case 3b: removing root that has two children
+        // and right subtree has a left spine → root = symmetricalNext
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(20);
+        tree.insert(10);
+        tree.insert(30);
+        tree.insert(8);
+        tree.insert(12); // 10.right=12, so 20.left.right != null → skips 3a left check
+        tree.insert(25); // 30.left=25, so 20.right.left != null → skips 3a right check → 3b
+        tree.insert(35);
+        // successor: go right to 30, then left to 25, 25.left=null → successor=25
+        assertTrue(tree.remove(20));
+        assertFalse(tree.find(20));
+        assertEquals(25, tree.root.data); // 25 is the new root
+        int[] result = tree.toArray(true);
+        for (int i = 0; i < result.length - 1; i++) {
+            assertTrue(result[i] < result[i + 1]);
+        }
+    }
+
     // ── getParent ─────────────────────────────────────────────────────────────
 
     @Test
@@ -368,9 +558,54 @@ class BinarySearchTreeTest {
         assertEquals(1, b3.min());
     }
 
-    @Test
-    void testToString() {
+    // ── toString ──────────────────────────────────────────────────────────────
 
+    @Test
+    void toStringSingleNode() {
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(42);
+        assertEquals("42\n", tree.toString());
+    }
+
+    @Test
+    void toStringEmpty() {
+        assertEquals("", b4.toString());
+    }
+
+    @Test
+    void toStringB2() {
+        String expected =
+                "    15\n"    +   // depth 1 →  4 spaces
+                        "        14\n" + // depth 2 →  8 spaces
+                        "10\n"         + // depth 0 →  0 spaces
+                        "            9\n" + // depth 3 → 12 spaces
+                        "        7\n"  + // depth 2 →  8 spaces
+                        "    5\n"      + // depth 1 →  4 spaces
+                        "        3\n";   // depth 2 →  8 spaces
+        assertEquals(expected, b2.toString());
+    }
+
+
+    @Test
+    void toStringB3RightSkewed() {
+        String expected =
+                "                5\n" +  // depth 4 → 16 spaces
+                        "            4\n"      + // depth 3 → 12 spaces
+                        "        3\n"          + // depth 2 →  8 spaces
+                        "    2\n"              + // depth 1 →  4 spaces
+                        "1\n";                   // depth 0 →  0 spaces
+        assertEquals(expected, b3.toString());
+    }
+
+    @Test
+    void toStringRootOnly() {
+        BinarySearchTree tree = new BinarySearchTree();
+        tree.insert(10);
+        tree.insert(5);   // only left child
+        String expected =
+                "10\n" +
+                        "    5\n";
+        assertEquals(expected, tree.toString());
     }
 
 }

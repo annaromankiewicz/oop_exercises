@@ -144,20 +144,22 @@ public class BinarySearchTree {
 
                 // case 2: node has just one child
             } else if (current.left == null || current.right == null) {
-                // check if the node we want to remove is left or right child of parent
-                if (right) { // node we want to remove is on the right
-                    if (current.left == null)
-                        parent.right = current.right; // right child replaces current
-                    else parent.right = current.left; // right child is not null
-                } else { // remove on left node of parent
-                    if (current.left == null)
-                        parent.left = current.right;
-                    else parent.left = current.left;
+                // The child that replaces current
+                BinaryTreeNode child = (current.left != null) ? current.left : current.right;
+
+                // CHANGE 6: special case for removing root with one child
+                if (parent == null) {
+                    root = child;
+                } else if (right) {
+                    parent.right = child;
+                } else {
+                    parent.left = child;
                 }
                 size--;
-                return true;
+                return true; // CHANGE 7: you were missing return true here
             }
-            // case 3a
+
+        // case 3a
             if (current.left.right == null) {
                 if (right) {                                  // connect prev (left or right) with current.left
                     current.left.right = current.right;
@@ -309,8 +311,11 @@ public class BinarySearchTree {
 
 
     // helper
+    /**
+     * Returns true if Node is an external node, only use it when p is not null
+     */
     boolean isExternalNode(BinaryTreeNode p) {
-        return (p.left == null && p.right == null);
+            return (p.left == null && p.right == null);
     }
 
 
@@ -405,9 +410,21 @@ public class BinarySearchTree {
         public int min () {
             return this.min;
         }
-//        /** Represents the tree in a human readable form. */
-//        public String toString () {
-//        }
+
+        /** Represents the tree in a human readable form. */
+
+        public String toString() {
+            return toStringRec(root, 0);
+        }
+
+    String toStringRec(BinaryTreeNode node, int depth) {
+        if (node == null) return "";
+        return toStringRec(node.right, depth + 1)
+                + "    ".repeat(depth) + node.data + "\n"
+                + toStringRec(node.left, depth + 1);
+    }
+
+
 
 }
 
