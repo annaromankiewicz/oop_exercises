@@ -104,9 +104,13 @@ public class BinarySearchTree {
 
     // helper
 
-    /* checks if the node with val = elem is on the left or right of parent */
+    /** checks if the node with val = elem is on the left or right of parent.
+     * Returns true if node is right child of parent and false if child is on the left or
+     * if parent is null */
      boolean isRight(BinaryTreeNode parent, int elem) {
-        return elem > parent.data;
+         if (parent != null) {
+             return elem > parent.data;
+         } return false;
     }
 
 
@@ -119,71 +123,94 @@ public class BinarySearchTree {
         BinaryTreeNode parent = null;
         if (root == null) {
             return false;
-        } else {
+        }
             current = getBinaryTreeNode(key); // node we want to remove if current.data = key
             parent = getParentNode(key);
-        }
-        if (current.data == key) {
-            boolean right = isRight(parent, key); // check if the node we want to remove is left or right child of parent
-            if (current.right == null && current.left == null) { // case 1: node w/ childnodes
-                current = null;
-            } else if (current.left == null || current.right == null) {  // case 2: node has just one child
-                // check if the node we want to remove is left or right child of parent = prev
-                if (right) { // child we want to remove is on the right
+
+        boolean right = parent != null && isRight(parent, key); // check if the node we want to remove is left or right child of parent
+
+        if (current.data != key) return false;
+        // case 1: node w/ children
+            if (current.right == null && current.left == null) {
+                if (parent == null) {
+                    root = null;                  // removing root
+                } else if (right) {
+                    parent.right = null;
+                } else {
+                    parent.left = null;
+                }
+                size--;
+                return true;
+
+                // case 2: node has just one child
+            } else if (current.left == null || current.right == null) {
+                // check if the node we want to remove is left or right child of parent
+                if (right) { // node we want to remove is on the right
                     if (current.left == null)
                         parent.right = current.right; // right child replaces current
                     else parent.right = current.left; // right child is not null
-                } else { // remove on left side of parent
+                } else { // remove on left node of parent
                     if (current.left == null)
                         parent.left = current.right;
                     else parent.left = current.left;
                 }
-
-            } // case 3a
+                size--;
+                return true;
+            }
+            // case 3a
             if (current.left.right == null) {
                 if (right) {                                  // connect prev (left or right) with current.left
                     current.left.right = current.right;
                     parent.right = current.left;
-                    return true;
                 } else {
                     current.left.right = current.right;                 // left child of current is new right child of old right child
                     parent.left = current.left;                           // left child is new node (instead of current)
-                    return true;
                 }
+                size--;
+                return true;
             } else if (current.right.left == null) {
                 if (right) {                                  // connect prev (left or right) with current.left
                     current.right.left = current.left;                 // left child of current is new right child of old right child
                     parent.right = current.right;
-                    return true;
                 } else {
                     current.right.left = current.left;                 // left child of current is new right child of old right child
                     parent.left = current.right;                           // left child is new node (instead of current)
-                    return true;
                 }
+                size--;
+                return true;
             }
-            // case 3b
-            parent = current;
+            // CASE 3b: general case — find inorder successor
+            BinaryTreeNode parentSymmetricalNext = current;
             BinaryTreeNode symmetricalNext = current.right;
             BinaryTreeNode p = current.right;
 
-            while (p != null) {
-                parent = symmetricalNext;
-                symmetricalNext = p;
+            while (p.left != null) {
+                parentSymmetricalNext = symmetricalNext;
+                symmetricalNext = p.left;
                 p = p.left;
-            } // p == null
-            parent.left = symmetricalNext.right;
-            symmetricalNext.left = current.left;
-            symmetricalNext.right = parent;
-
-            if (right) {                                  // connect parent (left or right) with current.left
-                parent.left = symmetricalNext;                           // left child is new node (instead of current)
-                return true;
-            } else {
-                parent.right = symmetricalNext;
-                return true;
             }
-        }
-        return true;
+
+        // detach symmetricalNext from its current position
+            if (parentSymmetricalNext == current) {     // symmetrical next is direct right child of current
+                parentSymmetricalNext.right = symmetricalNext.right;
+            } else {
+                parentSymmetricalNext.left = symmetricalNext.right;
+            }
+
+        // replace current with symmetricalNext
+            symmetricalNext.left = current.left;
+            symmetricalNext.right = current.right;
+
+        // restore parent-child relation
+            if (parent == null) {
+                root = symmetricalNext;
+            } else if (right) {
+                parent.right = symmetricalNext;
+            } else {
+                parent.left = symmetricalNext;
+            }
+            size--;
+            return true;
     }
 
 
@@ -381,6 +408,7 @@ public class BinarySearchTree {
 //        /** Represents the tree in a human readable form. */
 //        public String toString () {
 //        }
+
 }
 
 
