@@ -12,6 +12,7 @@ class BinarySearchTreeTest {
     BinarySearchTree b2 = new BinarySearchTree();
     BinarySearchTree b3 = new BinarySearchTree();
     BinarySearchTree b4 = new BinarySearchTree();
+    BinarySearchTree b5 = new BinarySearchTree();
 
     @BeforeEach
     void setUp() {
@@ -44,6 +45,10 @@ class BinarySearchTreeTest {
         b3.insert(3);
         b3.insert(4);
         b3.insert(5);
+
+        b5.insert(10);
+        b5.insert(5);
+        b5.insert(15);
 
     }
 
@@ -137,6 +142,33 @@ class BinarySearchTreeTest {
     }
 
     // ── remove ────────────────────────────────────────────────────────────────
+
+    @Test
+    void removeRoot() {
+        assertTrue(b1.remove(15));
+        assertFalse(b1.find(15));
+        System.out.print(b1.toString());
+    }
+
+    @Test()
+    void removeRootNoGrandchildren() {
+        assertTrue(b5.remove(10));
+        assertFalse(b5.find(10));
+        System.out.print(b5.toString());
+    }
+
+
+    @Test()
+    void removeRootNoChildren() {
+        b4.insert(42);
+        assertTrue(b4.remove(42));
+        assertFalse(b4.find(42));
+        assertEquals(0,b4.size);
+        assertNull(b4.root);
+    }
+
+
+
 
     @Test
     void removeFromEmptyTree() {
@@ -562,6 +594,7 @@ class BinarySearchTreeTest {
 
     @Test
     void toStringSingleNode() {
+        System.out.print(b1.toString());
         BinarySearchTree tree = new BinarySearchTree();
         tree.insert(42);
         assertEquals("42\n", tree.toString());
