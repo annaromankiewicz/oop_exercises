@@ -20,8 +20,8 @@ public class BinarySearchTree {
     /**
      * save the minimal and maximal value in the tree
      */
-    private int min;
-    private int max;
+    private int min = Integer.MIN_VALUE;
+    private int max = Integer.MAX_VALUE;
 
     /**
      * Root node of the tree.
@@ -47,8 +47,8 @@ public class BinarySearchTree {
             max = root.data;
             return true;
         }
-        current = getBinaryTreeNode(elem);
-        if (current.data != elem) { // current is parent of new BinaryTreeNode with data = elem
+        current = getBinaryTreeNode(elem);  // returns null if root is null -> already checked above
+        if (current.data != elem) {         // current is parent of new BinaryTreeNode with data = elem
             if (isRight(current, elem)) {
                 current.right = n;
                 if (n.data > max) max = n.data;
@@ -69,7 +69,7 @@ public class BinarySearchTree {
      */
     public boolean find(int key) {
         BinaryTreeNode p = getBinaryTreeNode(key);
-        if (p == null) return false;
+        if (p == null) return false; // tree is empty
         else return p.data == key;
     }
 
@@ -78,10 +78,10 @@ public class BinarySearchTree {
 
     /**
      * returns the BinaryTreeNode with val = key or if it is not found it returns the last BinaryTreeNode before the location where
-     * the BinaryTreeNode with requested key should be inserted
+     * the BinaryTreeNode with requested key should be found
      */
 
-    public BinaryTreeNode getBinaryTreeNode(int key) {
+    private BinaryTreeNode getBinaryTreeNode(int key) {
         BinaryTreeNode prev = null;
         BinaryTreeNode current = root;
         if (root == null) return null;
@@ -107,9 +107,9 @@ public class BinarySearchTree {
     /**
      * checks if the node with val = elem is on the left or right of parent.
      * Returns true if node is right child of parent and false if child is on the left or
-     * if parent is null
+     * if parent is null -> not best solution - better with exception (after we have learnt it)
      */
-    boolean isRight(BinaryTreeNode parent, int elem) {
+   private boolean isRight(BinaryTreeNode parent, int elem) {
         if (parent != null) {
             return elem > parent.data;
         }
@@ -158,7 +158,7 @@ public class BinarySearchTree {
             else if (right) parent.right = current.right; // connect parent (right) with current.right
             else parent.left = current.right;  // connect parent (left) with current.right
 
-            // case 3b: general case — find inorder successor (rechts-links-links-...-null)
+            // case 3b: general case — find inorder successor = symmetrical next (right-left-left-...-null)
         } else {
             BinaryTreeNode parentSymmetricalNext = current;       // parent of the inorder successor
             BinaryTreeNode symmetricalNext = current.right;       // start at right subtree
@@ -166,13 +166,9 @@ public class BinarySearchTree {
                 parentSymmetricalNext = symmetricalNext;
                 symmetricalNext = symmetricalNext.left;
             }
-            // symmetricalNext is now the inorder successor
 
-            // step 2: detach symmetricalNext — linkszeiger des Elternknotens zeigt auf rechtes Kind des Nachfolgers
-            if (parentSymmetricalNext == current)
-                parentSymmetricalNext.right = symmetricalNext.right; // successor was direct right child
-            else
-                parentSymmetricalNext.left = symmetricalNext.right;  // successor was further down left spine
+            // step 2: detach symmetricalNext — left pointer of parent references to right child of successor
+            parentSymmetricalNext.left = symmetricalNext.right;  // successor was further down left spine
 
             // step 3: replace current with symmetricalNext
             symmetricalNext.left = current.left;
@@ -207,8 +203,7 @@ public class BinarySearchTree {
      * Returns the parent node of element with the given key
      */
 
-    public BinaryTreeNode getParentNode(int key) {
-        BinaryTreeNode n = new BinaryTreeNode(key);
+    private BinaryTreeNode getParentNode(int key) {
         BinaryTreeNode prev = null;
         BinaryTreeNode current = root;
         if (root == null) return null;
@@ -343,10 +338,11 @@ public class BinarySearchTree {
         return toStringHelper(root, 0);
     }
 
-    String toStringHelper(BinaryTreeNode node, int depth) {
+    // here I got help of AI (claude), the idea of the recursion I had on my own, but I used some inspiration also of the example the prof showed us
+    private String toStringHelper(BinaryTreeNode node, int depth) {
         if (node == null) return "";
         return toStringHelper(node.right, depth + 1)
-                + "    ".repeat(depth) + node.data + "\n"
+                + "   ".repeat(depth) + node.data + "\n"
                 + toStringHelper(node.left, depth + 1);
     }
 
