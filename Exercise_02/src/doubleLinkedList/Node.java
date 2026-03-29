@@ -1,6 +1,4 @@
 package doubleLinkedList;
-
-
 public class Node {
     /** Ref to the next elem in the list, or null if it is the last */
     public Node next;

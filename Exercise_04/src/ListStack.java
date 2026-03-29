@@ -40,13 +40,14 @@ public class ListStack extends MyDoubleLinkedList {
 
     /** Method for tests */
     public boolean equals(ListStack l) {
-        if (this.elements() != l.elements()) {
+        int sizeOther = l.elements();
+        if (this.elements() != sizeOther) {
             return false;
         }
         int index= 0;
         boolean allElementsEqual = true;
-        while (index < l.elements()) {
-            allElementsEqual = this.peekElementAt(index) == l.peekElementAt(index);
+        while (index < sizeOther) {
+            allElementsEqual = super.peekElementAt(index) == l.peekElementAt(index);
             index++;
         } return allElementsEqual;
     }

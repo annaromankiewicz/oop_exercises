@@ -19,7 +19,9 @@ class RandomAccessDoubleLinkedListTest {
     @Test
     void ConstructorOther() {
         l2 = new RandomAccessDoubleLinkedList(l1);
-        assertEquals(l1, l2);
+        assertEquals(l1, l2);        // uses l1.equals(l2) internally — passes if equals() is overridden
+        l2.clear();
+        assertNotEquals(l1, l2);     // after clearing l2, equals() should return false
     }
 
 

@@ -45,15 +45,16 @@ public class ListQueue extends MyDoubleLinkedList {
         return super.peekFront();
     }
 
-    /** Method for tests */
+    /** Method for test */
     public boolean equals(ListQueue l) {
-        if (this.elements() != l.elements()) {
+        int sizeOther = l.elements();
+        if (super.elements() != sizeOther) {
             return false;
         }
         int index= 0;
         boolean allElementsEqual = true;
-            while (index < l.elements()) {
-                allElementsEqual = this.peekElementAt(index) == l.peekElementAt(index);
+            while (index < sizeOther) {
+                allElementsEqual = super.peekElementAt(index) == l.peekElementAt(index);
                 index++;
             } return allElementsEqual;
     }

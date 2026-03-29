@@ -122,10 +122,10 @@ public class QueueAdvanced {
         if (bottom != -1 && bottom < top) {
             for (int i = bottom; i <= top; i++) {
                 s.append(queue[i]);
-                if (i >= bottom && i < top) {
-                    s.append(",");
-                }
+                if (i < top) s.append(",");
             }
+        } else if (bottom != -1 && bottom == top) {  // single element
+            s.append(queue[bottom]);
         } else if (bottom != -1 && top < bottom) {
             for (int i = bottom; i < size; i++) {
                 s.append(queue[i]);
@@ -133,9 +133,7 @@ public class QueueAdvanced {
             }
             for (int i = 0; i <= top; i++) {
                 s.append(queue[i]);
-                if (i != top) {
-                    s.append(",");
-                }
+                if (i != top) s.append(",");
             }
         }
         s.append("]");

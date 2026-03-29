@@ -103,7 +103,9 @@ class QueueAdvancedTest {
         assertEquals("[]", q3.toString());
 
         q3.enqueue(1);
+        assertEquals("[1]", q3.toString());
         q3.enqueue(2);
+        assertEquals("[1,2]", q3.toString());
         q3.enqueue(3);
         q3.enqueue(4);
 
