@@ -29,12 +29,14 @@ public class RandomAccessDoubleLinkedList extends ArrayList<Integer> {
      * index is larger than the current size, the element is added at the
      * last position in the list. Should index be < 0, then do nothing.
      */
-    public void insertAt(int index, int val) { // override val that is already in list??
-        if (index >= 0 && index < super.size()) {
-            super.add(index, val);
-        } else {
-            super.addLast(val);
-        }
+    public void insertAt(int index, int val) { // if a value is already in list, at given index the list moves this value one position to the right
+       if (index >= 0) {
+           if (index < super.size()) {
+               super.add(index, val);
+           } else {
+               super.addLast(val);
+           }
+       }
     }
 
 

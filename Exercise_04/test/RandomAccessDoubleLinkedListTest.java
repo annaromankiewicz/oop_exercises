@@ -54,6 +54,13 @@ class RandomAccessDoubleLinkedListTest {
         assertEquals(1, l2.size());
     }
 
+    @Test
+    void insertAtEmptyInvalidValue() {
+        l2.insertAt(-3, 9);
+        assertEquals(Integer.MIN_VALUE, l2.elementAt(0));
+        assertEquals(0, l2.size());
+    }
+
 
     @Test
     void containsEmpty() {
@@ -63,27 +70,40 @@ class RandomAccessDoubleLinkedListTest {
     @Test
     void contains() {
         assertFalse(l1.contains(5));
+        assertTrue(l1.contains(7));
+        assertTrue(l1.contains(13));
     }
 
-
     @Test
-    void removeAt() {
+    void removeAtExistingValue() {
         // top 7, 13, 17, 19 top
         assertEquals(7, l1.elementAt(0));
-        l1.removeAt(0);
+        assertEquals(4, l1.size());
+        assertTrue(l1.removeAt(0));
         assertEquals(13, l1.elementAt(0));
+        assertEquals(3, l1.size());
+    }
+
+    @Test
+    void removeAtInvalidIndex() {
+        // top 7, 13, 17, 19 top
+        assertEquals(4, l1.size());
+        assertFalse(l1.removeAt(-10));
+        assertEquals(4, l1.size());
+        assertFalse(l1.removeAt(4));
+        assertEquals(4, l1.size());
     }
 
     @Test
     void removeAtEmpty() {
         assertEquals(Integer.MIN_VALUE, l1.elementAt(10));
-        l2.removeAt(10);
+        assertFalse(l2.removeAt(10));
         assertEquals(Integer.MIN_VALUE, l1.elementAt(10));
     }
 
 
     @Test
-    void removeAll() {
+    void removeAllExistingValue() {
         l2.add(10);
         l2.add(20);
         l2.add(10);
@@ -96,20 +116,32 @@ class RandomAccessDoubleLinkedListTest {
         l2.add(40);
 
         assertEquals(10, l2.size());
-        l2.removeAll(10);
+        assertTrue(l2.removeAll(10));
         assertEquals(5, l2.size());
-        l2.removeAll(40);
-        assertEquals(3, l2.size());
-
-        l2.removeAll(1);
+        assertTrue(l2.removeAll(40));
         assertEquals(3, l2.size());
     }
 
     @Test
-    void elementAt() {
+    void removeAllNotExistingValue() {
+        assertFalse(l1.removeAll(1));
+        assertEquals(4, l1.size());
+
+        assertFalse(l1.removeAll(100));
+        assertEquals(4, l1.size());
+    }
+
+    @Test
+    void elementAtValidIndex() {
         assertEquals(7, l1.elementAt(0));
         assertEquals(13, l1.elementAt(1));
         assertEquals(17, l1.elementAt(2));
         assertEquals(19, l1.elementAt(3));
     }
+
+    @Test
+    void elementAtInvalidIndex() {
+        assertEquals(Integer.MIN_VALUE, l1.elementAt(-1));
+    }
+
 }

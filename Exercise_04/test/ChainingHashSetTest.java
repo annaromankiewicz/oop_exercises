@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChainingHashSetTest {
     ChainingHashSet hashSet1 = new ChainingHashSet(7);
     ChainingHashSet hashSet2 = new ChainingHashSet(9);
+    ChainingHashSet hashSet3 = new ChainingHashSet(-1); // Invalid instantiation
 
     @BeforeEach
     void setUp() {
@@ -24,6 +25,12 @@ class ChainingHashSetTest {
     }
 
     @Test
+    void constructorInvalidIndexSize() {
+        hashSet2 = new ChainingHashSet(-1);
+        assertEquals(Integer.MIN_VALUE, hashSet2.elements());
+    }
+
+    @Test
     void insertNewValue() {
         assertFalse(hashSet1.contains(26));
         assertTrue(hashSet1.insert(26));
@@ -39,14 +46,33 @@ class ChainingHashSetTest {
     @Test
     void insertEmpty() {
         assertFalse(hashSet2.contains(1));
-        hashSet2.insert(1);
+        assertTrue(hashSet2.insert(1));
         assertTrue(hashSet2.contains(1));
     }
 
+    @Test
+    void insertEmptyInvalidInstantiation() {
+        assertFalse(hashSet3.contains(10));
+        assertFalse(hashSet3.insert(10));
+        assertFalse(hashSet3.contains(10));
+    }
+
+    @Test
+    void insertNegativeValue() {
+        assertFalse(hashSet1.contains(-6));
+        assertTrue(hashSet1.insert(-6)); // -6 % 7 = -6, (-6 + 7) % 7 = 1  -> bucket 1
+        assertTrue(hashSet1.contains(-6));
+        assertFalse(hashSet1.insert(-6)); // duplicate must be rejected
+    }
 
     @Test
     void containsEmpty() {
         assertFalse(hashSet2.contains(10));
+    }
+
+    @Test
+    void containsInvalidInstantiation() {
+        assertFalse(hashSet3.contains(10));
     }
 
     @Test
@@ -65,6 +91,13 @@ class ChainingHashSetTest {
     }
 
     @Test
+    void containsNegativeValue() {
+        assertFalse(hashSet1.contains(-99));
+        hashSet1.insert(-99);
+        assertTrue(hashSet1.contains(-99));
+    }
+
+    @Test
     void removeEmpty() {
         assertFalse(hashSet2.remove(10));
     }
@@ -76,7 +109,35 @@ class ChainingHashSetTest {
         assertFalse(hashSet1.contains(5));
     }
 
+    @Test
+    void removeNegativeValue() {
+        hashSet1.insert(-5);
+        assertTrue(hashSet1.contains(-5));
+        assertTrue(hashSet1.remove(-5));
+        assertFalse(hashSet1.contains(-5));
+    }
 
+    @Test
+    void removeCollision() {
+        assertTrue(hashSet1.contains(8));
+        assertTrue(hashSet1.contains(64));
+        assertTrue(hashSet1.contains(78));
+        assertEquals(3, hashSet1.getOverflowCount(1));
+        assertTrue(hashSet1.remove(64));
+        assertTrue(hashSet1.contains(8));
+        assertFalse(hashSet1.contains(64));
+        assertTrue(hashSet1.contains(78));
+        assertEquals(2, hashSet1.getOverflowCount(1));
+    }
+
+
+    @Test
+    void removeInvalidInstantiation() {
+        assertFalse(hashSet3.insert(5));
+        assertFalse(hashSet3.contains(5));
+        assertFalse(hashSet3.remove(5));
+        assertFalse(hashSet3.contains(5));
+    }
 
     @Test
     void getOverflowCountEmpty() {
@@ -104,8 +165,14 @@ class ChainingHashSetTest {
 
     @Test
     void getOverflowCountInvalidHashValue() {
-        assertEquals(-1, hashSet2.getOverflowCount(11));
-        assertEquals(-1, hashSet2.getOverflowCount(-5));
+        assertEquals(Integer.MIN_VALUE, hashSet2.getOverflowCount(11));
+        assertEquals(Integer.MIN_VALUE, hashSet2.getOverflowCount(-5));
+    }
+
+    @Test
+    void getOverflowCountInvalidInstantiation() {
+        assertEquals(Integer.MIN_VALUE, hashSet3.getOverflowCount(11));
+        assertEquals(Integer.MIN_VALUE, hashSet3.getOverflowCount(-5));
     }
 
     @Test
@@ -114,9 +181,33 @@ class ChainingHashSetTest {
     }
 
     @Test
-    void elements() {
+    void elementsAfterInsertValid() {
         assertEquals(12, hashSet1.elements());
+        assertTrue(hashSet1.insert(77));
+        assertEquals(13, hashSet1.elements());
+        assertTrue(hashSet1.insert(91));
+        assertEquals(14, hashSet1.elements());
     }
 
+    @Test
+    void elementsAfterRemove() {
+        assertEquals(12, hashSet1.elements());
+        assertTrue(hashSet1.remove(52));
+        assertEquals(11, hashSet1.elements());
+        assertTrue(hashSet1.remove(64));
+        assertEquals(10, hashSet1.elements());
+    }
+
+    @Test
+    void elementsInvalidInitiation() {
+        assertEquals(Integer.MIN_VALUE, hashSet3.elements());
+    }
+
+    @Test
+    void elementsAfterNegativeInsert() {
+        int before = hashSet1.elements();
+        hashSet1.insert(-3);
+        assertEquals(before + 1, hashSet1.elements());
+    }
 
 }

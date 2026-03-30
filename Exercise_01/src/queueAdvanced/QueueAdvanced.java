@@ -104,13 +104,12 @@ public class QueueAdvanced {
      * The contents of the two queues must not be changed!
      */
     public boolean equals(QueueAdvanced other) {
-        boolean isAllEqual = false;
         if (this.size == other.size && this.bottom == other.bottom && this.top == other.top) {
             for (int i = 0; i < size; i++) {
-                if (this.queue[i] == other.queue[i]) isAllEqual = true;
+                if (this.queue[i] != other.queue[i]) return false;
             }
         }
-        return isAllEqual;
+        return true;
     }
 
     /**

@@ -23,6 +23,25 @@ class ListQueueTest {
         l2.enqueue(50);
     }
 
+    @Test
+    void equal() {
+        l3 = new ListQueue(l1);
+        assertTrue(l1.equals(l3));
+
+        l1.enqueue(6);
+        l3.enqueue(7);
+
+        assertFalse(l1.equals(l3));
+
+    }
+
+    @Test
+    void constructorOtherNull() {
+        l3 = new ListQueue(new ListQueue());
+        assertEquals(0, l3.elements());
+        assertEquals(Integer.MIN_VALUE, l3.peek());
+        assertEquals(Integer.MIN_VALUE, l3.dequeue());
+    }
 
     @Test
     void constructorOther() {
@@ -66,11 +85,13 @@ class ListQueueTest {
         assertEquals(1, l1.peek());
         assertEquals(10, l2.peek());
         l2.dequeue();
-        assertEquals(20, l2.dequeue());
+        assertEquals(20, l2.peek());
     }
 
     @Test
     void peekEmpty() {
-        assertEquals(Integer.MIN_VALUE, l3.dequeue());
+        assertEquals(Integer.MIN_VALUE, l3.peek());
     }
+
+
 }

@@ -71,16 +71,15 @@ public class StackAdvanced {
      * The contents of the two stacks must not be changed!
      */
     public boolean equals(StackAdvanced other) {
-        boolean allElementsEqual = false;
         int minSize = this.size;
         if (other.size < this.size) {
             minSize = other.size;
         }
         for (int i = 0; i < minSize; i++) {
             if (this.stack[i] == other.stack[i])
-                allElementsEqual = true;
+                return false;
         }
-        return (this.top == other.top && this.size == other.size && allElementsEqual);
+        return (this.top == other.top && this.size == other.size);
     }
 
 

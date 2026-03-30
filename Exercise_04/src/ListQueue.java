@@ -52,10 +52,11 @@ public class ListQueue extends MyDoubleLinkedList {
             return false;
         }
         int index= 0;
-        boolean allElementsEqual = true;
+        boolean isEqual = false;
             while (index < sizeOther) {
-                allElementsEqual = super.peekElementAt(index) == l.peekElementAt(index);
+                isEqual = super.peekElementAt(index) == l.peekElementAt(index);
+                if (!isEqual) return false;
                 index++;
-            } return allElementsEqual;
+            } return isEqual;
     }
 }
