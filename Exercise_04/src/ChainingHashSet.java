@@ -41,7 +41,8 @@ public class ChainingHashSet {
 
     /**
      * Initializes an empty hashtable with the given number of overflow
-     * lists.
+     * lists. Allows indixSizes > 0 because an array with length 0 can't
+     * store values and would cause a division by zero in hash(int val)!
      */
     public ChainingHashSet(int indexSize) {
         if (indexSize > 0) {

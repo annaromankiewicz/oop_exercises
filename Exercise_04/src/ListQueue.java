@@ -45,14 +45,17 @@ public class ListQueue extends MyDoubleLinkedList {
         return super.peekFront();
     }
 
-    /** Method for test */
+    /** Method for tests. Without this method list1.equals(list2) would use the Object.equals() method
+     * that just compares the references. For override it should have this signature: equals(Object o)
+     * but here it works like this */
     public boolean equals(ListQueue l) {
+        if (l == null) return false;
         int sizeOther = l.elements();
         if (super.elements() != sizeOther) {
             return false;
         }
         int index= 0;
-        boolean isEqual = false;
+        boolean isEqual = true;
             while (index < sizeOther) {
                 isEqual = super.peekElementAt(index) == l.peekElementAt(index);
                 if (!isEqual) return false;

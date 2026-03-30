@@ -38,14 +38,18 @@ public class ListStack extends MyDoubleLinkedList {
         return super.peekBack();
     }
 
-    /** Method for tests */
+    /** Method for tests. Without this method list1.equals(list2) would use the Object.equals() method
+     * that just compares the references. For override it should have this signature: equals(Object o)
+     * but here it works like this */
+
     public boolean equals(ListStack l) {
+        if (l == null) return false;
         int sizeOther = l.elements();
         if (this.elements() != sizeOther) {
             return false;
         }
         int index= 0;
-        boolean isEqual = false;
+        boolean isEqual = true;
         while (index < sizeOther) {
             isEqual = super.peekElementAt(index) == l.peekElementAt(index);
             if (!isEqual) return false;
