@@ -143,7 +143,7 @@ public class QueueAdvanced {
     /**
      * Returns true if the element val exists in the stack, false otherwise.
      */
-    public boolean search(int val) {
+    public boolean search(T elem) {
         if (bottom == -1) return false; // empty queue
 
         if (bottom <= top) {
@@ -165,7 +165,7 @@ public class QueueAdvanced {
     /**
      * Enqueues an element at the back of the queue
      */
-    public void enqueue(int val) {
+    public void enqueue(T elem) {
         if (!(top == bottom - 1 || (top == size - 1 && bottom == 0))) {
             if (bottom == -1) { // starting point - empty queue
                 queue[0] = val;
@@ -185,7 +185,7 @@ public class QueueAdvanced {
      * Dequeues the element at the front of the queue
      */
     public int dequeue() {
-        int val;
+        T elem;
         if (bottom == -1) { // empty queue
             return Integer.MIN_VALUE;
         }
@@ -207,7 +207,7 @@ public class QueueAdvanced {
     /**
      * Returns the number of elements in the queue
      */
-    public int elements() {
+    public T elements() {
         if (bottom == -1)
             return 0;
         if (top > bottom) {

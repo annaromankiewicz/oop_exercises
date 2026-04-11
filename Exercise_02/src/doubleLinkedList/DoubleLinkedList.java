@@ -35,7 +35,7 @@ public class DoubleLinkedList {
     /**
      * Adds an element at the front of the linked list.
      */
-    public void prepend(int val) {
+    public void prepend(T elem) {
         if (val != Integer.MIN_VALUE) {
             Node n = new Node();
             n.val = val;
@@ -55,7 +55,7 @@ public class DoubleLinkedList {
     /**
      * Adds an element at the back of the linked list.
      */
-    public void append(int val) {
+    public void append(T elem) {
         if (val != Integer.MIN_VALUE) {
             Node n = new Node();
             n.val = val;
@@ -276,7 +276,7 @@ public class DoubleLinkedList {
     /**
      * Returns true if the element val exists in the list, false otherwise.
      */
-    public boolean search(int val) {
+    public boolean search(T elem) {
         if (val != Integer.MIN_VALUE) {
             Node p = head;
             while (p != null) {

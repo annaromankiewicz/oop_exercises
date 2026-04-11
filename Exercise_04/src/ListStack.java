@@ -23,7 +23,7 @@ public class ListStack extends MyDoubleLinkedList {
 
 
     /** Pushes an element onto the stack. */
-    public void push(int val) {
+    public void push(T elem) {
         super.pushBack(val);
         }
 

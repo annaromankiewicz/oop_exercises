@@ -29,7 +29,7 @@ public class RandomAccessDoubleLinkedList extends ArrayList<Integer> {
      * index is larger than the current size, the element is added at the
      * last position in the list. Should index be < 0, then do nothing.
      */
-    public void insertAt(int index, int val) { // if a value is already in list, at given index the list moves this value one position to the right
+    public void insertAt(int index, T elem) { // if a value is already in list, at given index the list moves this value one position to the right
        if (index >= 0) {
            if (index < super.size()) {
                super.add(index, val);
@@ -45,7 +45,7 @@ public class RandomAccessDoubleLinkedList extends ArrayList<Integer> {
      * otherwise. However, true is returned upon the first occurrence of
      * val.
      */
-    public boolean contains(int val) {
+    public boolean contains(T elem) {
         return super.contains(val);
     }
 
@@ -67,7 +67,7 @@ public class RandomAccessDoubleLinkedList extends ArrayList<Integer> {
      * Removes all elements with the given value. False if
      * val was not found.
      */
-    public boolean removeAll(int val) {
+    public boolean removeAll(T elem) {
         if (contains(val)) {
             while (contains(val)) {
                 super.remove((Integer) val); // remove(Object o) so if I write remove(val) and val is an Integer it would call remove (int index) -> typecast

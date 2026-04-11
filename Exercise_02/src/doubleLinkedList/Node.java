@@ -5,7 +5,7 @@ public class Node {
     /** Ref to the prev elem in the list, or null if it is the first */
     public Node prev;
     /** Holds the actual data */
-    public int val;
+    public T elem;
 
     public void flipNextPrev() {
         Node oldPrev = this.prev;

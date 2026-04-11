@@ -34,7 +34,7 @@ public class ChainingHashSet {
      * But it is handling negative values like in official HashSets, because -6 and 6 are not getting
      * saved with the same hash -> hash(-6)=1 and hash(6)=6
      */
-    private int hash(int val) {
+    private int hash(T elem) {
         // inner round bracket: result negative, second round bracket: result is positive
         return ((val % array.length) + array.length) % array.length;
     }
@@ -42,7 +42,7 @@ public class ChainingHashSet {
     /**
      * Initializes an empty hashtable with the given number of overflow
      * lists. Allows indixSizes > 0 because an array with length 0 can't
-     * store values and would cause a division by zero in hash(int val)!
+     * store values and would cause a division by zero in hash(T elem)!
      */
     public ChainingHashSet(int indexSize) {
         if (indexSize > 0) {
@@ -55,7 +55,7 @@ public class ChainingHashSet {
      * array.length), if it did not exist in the table before. Returns true
      * if a new element was inserted, false if it already existed.
      */
-    public boolean insert(int val) { // we use the absolute value of hashcode of negative values to not lose data
+    public boolean insert(T elem) { // we use the absolute value of hashcode of negative values to not lose data
         if (this.array != null) {
             int hashcode = hash(val);
             if (array[hashcode] == null) { // first element with the hashcode
@@ -75,7 +75,7 @@ public class ChainingHashSet {
      * Returns true if the given value is already stored in the
      * hashtable, false otherwise.
      */
-    public boolean contains(int val) {
+    public boolean contains(T elem) {
         if (this.array != null) {
             int hashcode = hash(val);
             if (array[hashcode] == null) return false; // List of given val with hashcode is empty
@@ -89,7 +89,7 @@ public class ChainingHashSet {
      * Returns true if an element was removed, false if no such
      * element existed.
      */
-    public boolean remove(int val) {
+    public boolean remove(T elem) {
         if (this.array != null) {
             if (this.contains(val)) {
                 int hashcode = hash(val);

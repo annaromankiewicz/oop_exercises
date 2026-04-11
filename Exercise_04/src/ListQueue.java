@@ -27,8 +27,8 @@ public class ListQueue extends MyDoubleLinkedList {
     /**
      * Enqueues an element at the back of the queue.
      */
-    public void enqueue(int val) {
-        super.pushBack(val);
+    public void enqueue(int elem) {
+        super.pushBack(elem);
     }
 
     /**

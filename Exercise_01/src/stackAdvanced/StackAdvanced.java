@@ -96,7 +96,7 @@ public class StackAdvanced {
     /**
      * Pushes an element onto the stack
      */
-    public void push(int val) {
+    public void push(T elem) {
         if (this.size > 0 && this.stack != null) {
             if (this.top < this.size) {
                 this.stack[this.top] = val;
@@ -109,7 +109,7 @@ public class StackAdvanced {
      * Returns the top element of the stack and removes it
      */
     public int pop() {
-        int val;
+        T elem;
         if (this.top > 0) {
             this.top--;
             val = this.stack[this.top];
