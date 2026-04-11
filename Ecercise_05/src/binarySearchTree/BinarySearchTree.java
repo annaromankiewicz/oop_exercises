@@ -1,27 +1,24 @@
 package binarySearchTree;
 
-public class BinarySearchTree {
+public class BinarySearchTree<T extends Comparable<T>> {
 
-    /**
-     * Inner class for the binary tree node.
-     **/
     protected class BinaryTreeNode {
         public BinaryTreeNode left;
         public BinaryTreeNode right;
-        public int data;
+        public T data;
 
-        public BinaryTreeNode(int elem) {
-            data = elem;
-            left = null;
-            right = null;
+        public BinaryTreeNode(T data) {
+            this.data = data;
+            this.left = null;
+            this.right = null;
         }
     }
 
     /**
      * save the minimal and maximal value in the tree
      */
-    private int min = Integer.MIN_VALUE;
-    private int max = Integer.MAX_VALUE;
+    private T min;
+    private T max;
 
     /**
      * Root node of the tree.
@@ -37,7 +34,7 @@ public class BinarySearchTree {
      * Inserts the given element. Duplicate elements are not allowed.
      * Returns true if insertion was successful, false otherwise.
      */
-    public boolean insert(int elem) {
+    public boolean insert(T elem) {
         BinaryTreeNode current;
         BinaryTreeNode n = new BinaryTreeNode(elem);
         if (root == null) {
@@ -48,13 +45,13 @@ public class BinarySearchTree {
             return true;
         }
         current = getBinaryTreeNode(elem);  // returns null if root is null -> already checked above
-        if (current.data != elem) {         // current is parent of new BinaryTreeNode with data = elem
+        if (current.data.compareTo(elem) != 0) {         // current is parent of new BinaryTreeNode with data = elem
             if (isRight(current, elem)) {
                 current.right = n;
-                if (n.data > max) max = n.data;
+                if (n.data.compareTo(max)>0) max = n.data;
             } else {
                 current.left = n;
-                if (n.data < min) min = n.data;
+                if (n.data.compareTo(min)<0) min = n.data;
             }
             size++;
             return true;
@@ -67,10 +64,10 @@ public class BinarySearchTree {
      * Searches for the (first) element with the given key. Returns true
      * if it could be found, false otherwise.
      */
-    public boolean find(int key) {
+    public boolean find(T key) {
         BinaryTreeNode p = getBinaryTreeNode(key);
         if (p == null) return false; // tree is empty
-        else return p.data == key;
+        else return p.data.compareTo(key) == 0;
     }
 
 
@@ -81,14 +78,14 @@ public class BinarySearchTree {
      * the BinaryTreeNode with requested key should be found
      */
 
-    private BinaryTreeNode getBinaryTreeNode(int key) {
+    private BinaryTreeNode getBinaryTreeNode(T key) {
         BinaryTreeNode prev = null;
         BinaryTreeNode current = root;
         if (root == null) return null;
-        else if (root.data == key) {
+        else if (root.data.compareTo(key)==0) {
             return root;        // key found
-        } else while (current != null && current.data != key) {
-            if (key < current.data) {
+        } else while (current != null && current.data.compareTo(key)!=0) {
+            if (key.compareTo(current.data)<0) {
                 prev = current;
                 current = current.left;
             } else {
@@ -109,9 +106,9 @@ public class BinarySearchTree {
      * Returns true if node is right child of parent and false if child is on the left or
      * if parent is null -> not best solution - better with exception (after we have learnt it)
      */
-   private boolean isRight(BinaryTreeNode parent, int elem) {
+    private boolean isRight(BinaryTreeNode parent, T elem) {
         if (parent != null) {
-            return elem > parent.data;
+            return elem.compareTo(parent.data)>0;
         }
         return false;
     }
@@ -121,13 +118,13 @@ public class BinarySearchTree {
      * Removes the element with the given key. Returns true if
      * the key could be found (and removed), false otherwise.
      */
-    public boolean remove(int key) { // left or right from parent check just one time
+    public boolean remove(T key) { // left or right from parent check just one time
         if (root == null) return false;
 
         BinaryTreeNode current = getBinaryTreeNode(key); // node we want to remove
         BinaryTreeNode parent = getParentNode(key);     // parent of node we want to remove
 
-        if (current == null || current.data != key) return false; // key not in tree
+        if (current == null || current.data.compareTo(key) != 0) return false; // key not in tree
 
         boolean right = parent != null && isRight(parent, key); // check if the node we want to remove is left or right child of parent
 
@@ -179,10 +176,9 @@ public class BinarySearchTree {
             else if (right) parent.right = symmetricalNext;  // connect parent (right) with symmetricalNext
             else parent.left = symmetricalNext;   // connect parent (left) with symmetricalNext
         }
-
         size--;
         if (size > 0) {
-            int[] sorted = toArray(true);
+            T[] sorted = toArray(true);
             min = sorted[0];
             max = sorted[size - 1];
         }
@@ -203,14 +199,14 @@ public class BinarySearchTree {
      * Returns the parent node of element with the given key
      */
 
-    private BinaryTreeNode getParentNode(int key) {
+    private BinaryTreeNode getParentNode(T key) {
         BinaryTreeNode prev = null;
         BinaryTreeNode current = root;
         if (root == null) return null;
-        else if (root.data == key) {
+        else if (root.data.compareTo(key)==0) {
             return null; // check what to return if elem is in root
-        } else while (current != null && current.data != key) {
-            if (key < current.data) {
+        } else while (current != null && current.data.compareTo(key)!=0) {
+            if (key.compareTo(current.data)<0) {
                 prev = current;
                 current = prev.left;
             } else {
@@ -229,9 +225,9 @@ public class BinarySearchTree {
      * Returns the parent element of the given key. Integer.MIN_VALUE if
      * no parent can be found.
      */
-    public int getParent(int key) {
+    public T getParent(T key) {
         BinaryTreeNode parent = getParentNode(key);
-        if (parent == null) return Integer.MIN_VALUE;
+        if (parent == null) return null;
         return parent.data;
     }
 
@@ -240,8 +236,8 @@ public class BinarySearchTree {
      * Returns the elements of the tree in ascending (inorder traversal)
      * or descending (reverse inorder traversal) order.
      */
-    public int[] toArray(boolean ascending) {
-        int[] a = new int[size];
+    public T[] toArray(boolean ascending) {
+        T[] a = (T[]) new Comparable[size]; //
         toArray(a, ascending, 0, root);
         return a;  // no more manual reversal needed
     }
@@ -251,7 +247,7 @@ public class BinarySearchTree {
     /**
      * Recursive methode to get always the value of the lower visited node
      */
-    private int toArray(int[] ret, boolean ascending, int offset, BinaryTreeNode n) {
+    private int toArray(T[] ret, boolean ascending, int offset, BinaryTreeNode n) {
         if (n == null) return offset;
         if (ascending) {
             offset = toArray(ret, ascending, offset, n.left);   // left first
@@ -269,8 +265,8 @@ public class BinarySearchTree {
     /**
      * Returns the elements of the tree (postorder traversal).
      */
-    public int[] toArrayPostOrder() {
-        int[] ret = new int[size];
+    public T[] toArrayPostOrder() {
+        T[] ret = (T[]) new Comparable[size];
         postOrder(ret, 0, root);
         return ret;
     }
@@ -280,7 +276,7 @@ public class BinarySearchTree {
     /**
      * Recursive methode to get always the value of the right visited node
      */
-    private int postOrder(int[] ret, int offset, BinaryTreeNode n) {
+    private int postOrder(T[] ret, int offset, BinaryTreeNode n) {
         if (n == null) return offset;
         offset = postOrder(ret, offset, n.left);
         offset = postOrder(ret, offset, n.right);
@@ -292,8 +288,8 @@ public class BinarySearchTree {
     /**
      * Returns the elements of the tree (preorder traversal).
      */
-    public int[] toArrayPreOrder() {
-        int[] ret = new int[size];
+    public T[] toArrayPreOrder() {
+        T[] ret = (T[]) new Comparable[size];
         preOrder(ret, 0, root);
         return ret;
     }
@@ -303,7 +299,7 @@ public class BinarySearchTree {
     /**
      * Recursive methode to get always the value of the left visited node
      */
-    private int preOrder(int[] ret, int offset, BinaryTreeNode n) {
+    private int preOrder(T[] ret, int offset, BinaryTreeNode n) {
         if (n == null) return offset;
         ret[offset++] = n.data;
         offset = preOrder(ret, offset, n.left);
@@ -316,8 +312,8 @@ public class BinarySearchTree {
      * Returns largest number stored in the tree. Integer.MIN_VALUE if
      * no largest element can be found
      */
-    public int max() { // right right right till next is null
-        if (root == null) return Integer.MIN_VALUE;
+    public T max() { // right right right till next is null
+        if (root == null) return null;
         return this.max;
     }
 
@@ -325,8 +321,8 @@ public class BinarySearchTree {
      * Returns smallest number stored in the tree. Integer.MIN_VALUE if
      * no smallest element can be found
      */
-    public int min() {
-        if(root == null) return Integer.MIN_VALUE;
+    public T min() {
+        if (root == null) return null;
         return this.min;
     }
 
@@ -347,8 +343,4 @@ public class BinarySearchTree {
     }
 
 
-
 }
-
-
-
