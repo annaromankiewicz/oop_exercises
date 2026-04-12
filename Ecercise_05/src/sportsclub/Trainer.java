@@ -1,8 +1,8 @@
 package sportsclub;
 
 public class Trainer extends ActiveMember {
-    protected Trainer(int activityLevel) {
-        super(activityLevel);
+    protected Trainer(String name, int activityLevel) {
+        super(name, activityLevel);
     }
 
     //    Aktive Mitglieder (Klasse ActiveMember): Diese Mitglieder besitzen einen ganzzahligen
@@ -11,13 +11,23 @@ public class Trainer extends ActiveMember {
 //    o Trainer (Klasse Trainer): Monatlicher Beitrag: €10,- Ausgaben in € pro Monat:
 //    Aktivitätsgrad * 40
 
+//    @Override
+//    double getIncome() {
+//        return 12* 10;
+//    }
+
     @Override
-    double getIncome() {
+    protected double getMonthlyIncome() {
         return 10;
     }
 
+//    @Override
+//    double getCosts() {
+//        return 12*activityLevel * 40;
+//    }
+
     @Override
-    double getCosts() {
+    protected double getMonthlyCosts() {
         return activityLevel * 40;
     }
 

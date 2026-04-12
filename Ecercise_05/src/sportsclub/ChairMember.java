@@ -1,6 +1,6 @@
 package sportsclub;
 
-public class ChairMember extends AbstractMember implements Comparable<ChairMember>{
+public class ChairMember extends AbstractMember {
 
     /** Vorstandsmitglieder haben einen
     ganzzahligen Kompetenzwert im Bereich von 0 und 10. Ein Vorstandsmitglied erzeugt durch
@@ -10,7 +10,8 @@ public class ChairMember extends AbstractMember implements Comparable<ChairMembe
 
     protected int competenceValue;
 
-    public ChairMember(int competenceValue) {
+    public ChairMember(String name, int competenceValue) {
+        super(name);
         if (competenceValue >= 0 && competenceValue <= 10) {
             this.competenceValue = competenceValue;
         }
@@ -26,18 +27,19 @@ public class ChairMember extends AbstractMember implements Comparable<ChairMembe
         return getIncome()*0.2;
     }
 
-    @Override
-    double getSurplus() {
-        return getIncome()-getCosts();
-    }
+//    @Override
+//    double getSurplus() {
+//        return getIncome()-getCosts();
+//    }
 
     @Override
     String toString(boolean ascending) {
         return "";
     }
 
-    @Override
-    public int compareTo(ChairMember o) {
-        return this.competenceValue-o.competenceValue;
-    }
+//    @Override
+//    public int compareTo(AbstractMember o) {
+//        ChairMember other = (ChairMember) o;
+//        return this.competenceValue-other.competenceValue;
+//    }
 }

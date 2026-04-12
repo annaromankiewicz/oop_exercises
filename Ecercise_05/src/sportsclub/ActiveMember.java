@@ -1,6 +1,6 @@
 package sportsclub;
 
-public class ActiveMember extends AbstractMember implements Comparable<ActiveMember>{
+abstract public class ActiveMember extends AbstractMember {
 
 //    Aktive Mitglieder (Klasse ActiveMember): Diese Mitglieder besitzen einen ganzzahligen
 //    Aktivitätsgrad im Bereich von 0 bis 10, und gliedern sich in:
@@ -13,7 +13,8 @@ public class ActiveMember extends AbstractMember implements Comparable<ActiveMem
 
     protected int activityLevel;
 
-    protected ActiveMember(int activityLevel) {
+    protected ActiveMember(String name, int activityLevel) {
+        super(name);
         if (activityLevel >= 0 && activityLevel <= 10) {
             this.activityLevel = activityLevel;
         }
@@ -21,26 +22,30 @@ public class ActiveMember extends AbstractMember implements Comparable<ActiveMem
 
     @Override
     double getIncome() {
-        return 0;
+        return 12*getMonthlyIncome();  // *12 is in all subclasses the same, makes it easier to calculate income for each quarter etc.
     }
+
+    abstract protected double getMonthlyIncome();           // abstract method implemented in each subclass
 
     @Override
     double getCosts() {
-        return 0;
+        return 12 * getMonthlyCosts();
     }
 
-    @Override
-    double getSurplus() {
-        return getIncome()-getCosts();
-    }
+    abstract protected double getMonthlyCosts();
+
+//    @Override
+//    double getSurplus() {
+//        return getIncome() - getCosts();
+//    }
 
     @Override
     String toString(boolean ascending) {
-        return "";
+        return this.name + " | " + getIncome() + "INCOME |" + " | " + getCosts() + "COSTS |" + " | " + getSurplus() + "SURPLUS |";
     }
 
-    @Override
-    public int compareTo(ActiveMember o) {
-        return this.activityLevel-o.activityLevel;
-    }
+//    @Override
+//    public int compareTo(AbstractMember o) {
+//    }
+
 }

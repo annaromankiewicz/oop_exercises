@@ -1,6 +1,10 @@
 package sportsclub;
 
-public class HonoraryMember extends AbstractMember implements Comparable<HonoraryMember> {
+public class HonoraryMember extends AbstractMember {
+
+    public HonoraryMember(String name) {
+        super(name);
+    }
 
     @Override
     double getIncome() {
@@ -12,18 +16,18 @@ public class HonoraryMember extends AbstractMember implements Comparable<Honorar
         return 20;
     }
 
-    @Override
-    double getSurplus() {
-        return getIncome()-getCosts();
-    }
+//    @Override
+//    double getSurplus() {
+//        return getIncome()-getCosts();
+//    }
 
     @Override
     String toString(boolean ascending) {
         return "";
     }
 
-    @Override
-    public int compareTo(HonoraryMember o) {
-        return 0;
-    }
+//    @Override
+//    public int compareTo(AbstractMember o) {
+//       return 0;
+//    }
 }

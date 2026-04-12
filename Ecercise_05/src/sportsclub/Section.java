@@ -2,32 +2,63 @@ package sportsclub;
 
 import binarySearchTree.BinarySearchTree;
 
-public class Section extends AbstractMember{
-    BinarySearchTree section = new BinarySearchTree<Section>();
+import javax.swing.tree.TreeNode;
 
+public class Section extends AbstractMember {
+
+    BinarySearchTree<AbstractMember> section;
+
+    public Section(String name) {
+        super(name);
+        section = new BinarySearchTree<AbstractMember>();
+    }
 
     @Override
     double getIncome() {
-        return 0;
+        AbstractMember[] sectionArray = section.toArray(new AbstractMember[section.size()], true); // I changed the signature of toArray in BST to avoid a typecast
+        double sum = 0;
+        for (AbstractMember member : sectionArray) {
+                sum += member.getIncome();
+            }
+        return sum;
     }
 
     @Override
     double getCosts() {
-        return 0;
+        AbstractMember[] sectionArray = section.toArray(new AbstractMember[section.size()], true);
+        double sum = 0;
+        for (AbstractMember abstractMember : sectionArray) {
+            sum += abstractMember.getCosts();
+        }
+        return sum;
     }
 
-    @Override
-    double getSurplus() {
-        return 0;
-    }
+//    @Override
+//    double getSurplus() {
+//        return getIncome()-getCosts();
+//    }
 
+
+    //TODO implementation whith the help of an array of the sections
     @Override
     String toString(boolean ascending) {
-        return "";
+        return null;
     }
 
-    boolean addMember(AbstractMember m) {}
-     boolean removeMember(AbstractMember m) {}
-     boolean isMember(AbstractMember m) {}
+    boolean addMember(AbstractMember m) {
+    return section.insert(m);
+    }
 
+     boolean removeMember(AbstractMember m) {
+     return section.remove(m);
+     }
+
+     boolean isMember(AbstractMember m) {
+        return section.find(m);
+     }
+
+//    @Override
+//    public int compareTo(AbstractMember o) {
+//        return 0;
+//    }
 }

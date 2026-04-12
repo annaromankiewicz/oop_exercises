@@ -2,6 +2,10 @@ package sportsclub;
 
 public class SupportingMember extends AbstractMember {
 
+    public SupportingMember(String name) {
+        super(name);
+    }
+
 //    Unterstützende Mitglieder (Klasse SupportingMember): Diese Mitglieder bezahlen einen
 //    Jahresbeitrag von €100,- und verursachen bei Vereinsfesten Ausgaben von durchschnittlich
 //    €15,- pro Jahr.
@@ -16,18 +20,22 @@ public class SupportingMember extends AbstractMember {
         return 15;
     }
 
-    @Override
-    double getSurplus() {
-        return getIncome()-getCosts();
-    }
+//    @Override
+//    double getSurplus() {
+//        return getIncome()-getCosts();
+//    }
 
     @Override
     String toString(boolean ascending) {
-        return "";
+        return super.toString();
     }
 
     public String toString() {
         return toString(true);
     }
 
+//    @Override
+//    public int compareTo(AbstractMember o) {
+//        return 0;
+//    }
 }

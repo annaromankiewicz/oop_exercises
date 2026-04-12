@@ -1,5 +1,7 @@
 package binarySearchTree;
 
+import sportsclub.AbstractMember;
+
 public class BinarySearchTree<T extends Comparable<T>> {
 
     protected class BinaryTreeNode {
@@ -178,7 +180,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
         }
         size--;
         if (size > 0) {
-            T[] sorted = toArray(true);
+            T[] sorted = toArray((T[]) new Comparable[size], true);
             min = sorted[0];
             max = sorted[size - 1];
         }
@@ -236,8 +238,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
      * Returns the elements of the tree in ascending (inorder traversal)
      * or descending (reverse inorder traversal) order.
      */
-    public T[] toArray(boolean ascending) {
-        T[] a = (T[]) new Comparable[size]; //
+    public T[] toArray(T[] a, boolean ascending) {
         toArray(a, ascending, 0, root);
         return a;  // no more manual reversal needed
     }
@@ -265,8 +266,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     /**
      * Returns the elements of the tree (postorder traversal).
      */
-    public T[] toArrayPostOrder() {
-        T[] ret = (T[]) new Comparable[size];
+    public T[] toArrayPostOrder(T[] ret) {
         postOrder(ret, 0, root);
         return ret;
     }
@@ -288,8 +288,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     /**
      * Returns the elements of the tree (preorder traversal).
      */
-    public T[] toArrayPreOrder() {
-        T[] ret = (T[]) new Comparable[size];
+    public T[] toArrayPreOrder(T[] ret) {
         preOrder(ret, 0, root);
         return ret;
     }
